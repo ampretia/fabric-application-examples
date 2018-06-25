@@ -10,7 +10,7 @@ https://github.com/mbwhite/chaincode-examples/tree/europa .  Eurpoa is just a na
 
 **Point 1:** Chaincode is created as an npm module.
 
-Minimal `package.json` is as follows - the only runtime dependencay as far as anything blockchain is concerned is the `fabric-shim`.  Please add additinal business logic and testing libraries!
+Minimal `package.json` is as follows - the only runtime dependencay as far as anything blockchain is concerned is the `fabric-shim`.  Please add additinal business logic and testing libraries! This `fabric-shim` is requried for the `SmartContract` class that should be extended by all contracts.
 
 _Here the version is a locally published version of the repo above._ 
 
@@ -21,9 +21,6 @@ _Here the version is a locally published version of the repo above._
   "engines": {
     "node": ">=8.4.0",
     "npm": ">=5.3.0"
-  },
-  "scripts": {
-    "start": "node index.js"
   },
   "engine-strict": true,
   "engineStrict": true,
@@ -39,22 +36,15 @@ _Here the version is a locally published version of the repo above._
 
 **Point 2:** How is chaincode deployed?
 
-Chaincode is deployed by the peer in response to issuing a number of (usually CLI) commands - for node.js chaincode also take the location of the chaincode npm project . (Needs to be local at present, rather that pulling from npmjs or other repos. )  A docker image is built for this chaincode, the package.json and code copied in. and `npm install` run. 
+Chaincode is deployed by the peer in response to issuing a number of (usually CLI) commands - for node.js chaincode also take the location of the chaincode npm project . (Needs to be local at present, rather that pulling from npmjs or other repos. )  A docker image is built for this chaincode, the package.json and code copied in. and `npm install` run.
 
-After this the `npm start` is run.
+> It is important to make sure that you have a `package-lock.json` to make the correct packages are imported.
 
-**Point 3:** What does the start command need to do?
+After this the chaincode is bootstrapped. The chaincode needs to export the smart contract classes - from which the set of the functions are taken. 
 
-This needs to simply register with the 'shim' the classes that represent the smart contract implementations - and from which the individual functions of that smart contract can be determined.
+**Point 3:** What needs to be exported?
 
-In this example, in the npm module there are
-
-```
-package.json
-index.json
-removevalues.js
-updatevalues.js
-```
+Typically this is in `index.js` - but it is what is exported in the main.
 
 For example:
 
@@ -65,10 +55,10 @@ For example:
 const UpdateValues = require('./updatevalues')
 const RemoveValues = require('./removevalues')
 
-require('fabric-shim').SmartContract.register([UpdateValues,RemoveValues]);
+module.exports.contracts = ['UpdateValues','RemoveValues'];
 ```
 
-This registers two classes that together form the SmartContract. 
+This exports two classes that together form the SmartContract. 
 
 **Point 4:** What do these classes need to contain?
 

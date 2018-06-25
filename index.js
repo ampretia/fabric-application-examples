@@ -3,5 +3,5 @@
 const UpdateValues = require('./updatevalues')
 const RemoveValues = require('./removevalues')
 
-require('fabric-shim').SmartContract.register([UpdateValues,RemoveValues]);
-
+// export the smart contracts
+module.exports.contracts = [UpdateValues,RemoveValues];

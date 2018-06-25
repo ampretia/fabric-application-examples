@@ -2,6 +2,7 @@
 
 // SDK Library to asset with writing the logic
 const SmartContract = require('fabric-shim').SmartContract;
+console.log(require.resolve('fabric-shim'));
 
 // Business logic (well just util but still it's general purpose logic)
 const util = require('util');
