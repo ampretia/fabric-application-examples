@@ -1,18 +1,18 @@
 # How to write a smart contract
 
-This is based of the version 1.2 of Fabric, with a modified `fabric-chaincode-node` implementation.
-(This is in the 'europa' branch of https://github.com/mbwhite/fabric-chaincode-node/ with the example at 
-https://github.com/mbwhite/chaincode-examples/tree/europa .  Eurpoa is just a name to identify this approach)
-
+> This is based of the version 1.2 of Fabric, with a modified `fabric-chaincode-node` implementation.
+> (This is in the 'europa' branch of https://github.com/mbwhite/fabric-chaincode-node/ with the example at 
+> https://github.com/mbwhite/chaincode-examples/tree/europa .  Eurpoa is just a name to identify this approach)
+>
+> This is a point in time document; changes specifically to the separation of implementation from API are planned
 
 
 ## Writing the chaincode
 
-**Point 1:** Chaincode is created as an npm module.
+### 1: Chaincode is created as an npm module.
 
-Minimal `package.json` is as follows - the only runtime dependencay as far as anything blockchain is concerned is the `fabric-shim`.  Please add additinal business logic and testing libraries! This `fabric-shim` is requried for the `SmartContract` class that should be extended by all contracts.
+An initial `package.json` is as follows - the only runtime dependencay as far as anything blockchain is concerned is the `fabric-shim`.  Please add additinal business logic and testing libraries! This `fabric-shim` is requried for the `SmartContract` class that should be extended by all contracts, and the code to 'bootstrap' the chaincode into life.
 
-_Here the version is a locally published version of the repo above._ 
 
 ```
 {
@@ -22,6 +22,9 @@ _Here the version is a locally published version of the repo above._
     "node": ">=8.4.0",
     "npm": ">=5.3.0"
   },
+  "scripts": {
+    "start": "startChaincode"
+  },
   "engine-strict": true,
   "engineStrict": true,
   "version": "1.0.0",
@@ -29,29 +32,28 @@ _Here the version is a locally published version of the repo above._
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fabric-shim": "^1.2.0-mbw-01"
+    "fabric-shim": "^1.2.0-mbw-europa"
   }
 }
+
 ```
 
-**Point 2:** How is chaincode deployed?
+### 2: How is chaincode deployed?
 
 Chaincode is deployed by the peer in response to issuing a number of (usually CLI) commands. For node.js chaincode the location of the chaincode npm project is required (the directory that the package.json is in). This does not need to be an installed project, but has to have all the code, and the package.json.
 
 A docker image is built for this chaincode, the package.json and code copied in. and `npm install` run.
-> It is important to make sure that you have a `package-lock.json` to make the correct packages are imported.
+> It is important to make sure that you have a `package-lock.json` to ensure the correct packages are imported.
 
-> TODO: What does this take in terms of the .gitignore etc?
+After the install there is a 'bootstrap' process that starts the chaincode up (more details later). The constructors of the exported SmartContracts will be run at this point; these constructors are for setting the namespace and optionally  setup of the 'error/monitoring functions', (again more later).
 
-After the install there is a 'bootstrap' process that starts the chaincode up. 
+When chaincode is instantiated or updated, the `init()` function is the chaincode is called. As with the `invoke()` call from the client, a fn name and parameters can be passed. Remember therefore to have specific functions to call on `init()` and `update()` in order to do any data initialization or migration that might be needed
 
-The constructors of the exported SmartContracts will be run at this point; functional logic must be put into the an exported function on the smart contract - so if there is some initial state to check or set for example this should be in a dedicated function that is invoked when the chaincode is instantiated.
+### 3: What needs to be exported?
 
-**Point 3:** What needs to be exported?
+Node states that modeul exports are defined in `index.js`
 
-Convention is that this is in `index.js` - but the actual value is taken from the 'main' field of the `package.json`
-
-For example:
+In this example we have a single value that can be queried and updated. This has been split into to parts for demonstration purposes. 
 
 ```
 // index.js
@@ -64,9 +66,9 @@ module.exports.contracts = ['UpdateValues','RemoveValues'];
 ```
 
 This exports two classes that together form the SmartContract. There can be other code that within the model that is used in a support role. 
+*Note that the 'contracts' word is mandatory.*
 
-
-**Point 4:** What do these classes need to contain?
+### 4: What do these classes need to contain?
 
 As an example the `updatevalues` will look like this (with the function bodies remove for clarity)
 
@@ -75,7 +77,7 @@ As an example the `updatevalues` will look like this (with the function bodies r
 'use strict';
 
 // SDK Library to asset with writing the logic
-const SmartContract = require('fabric-shim').SmartContract;
+const SmartContract = require('fabric-shim').contractapi.SmartContract;
 
 // Business logic (well just util but still it's general purpose logic)
 const util = require('util');
@@ -93,11 +95,11 @@ class UpdateValues extends SmartContract {
 	  //  .....
 	}
 
-	async setNewAssetValue(api, args) {
+	async setNewAssetValue(api, newValue) {
 	  //  .....
 	}
 
-	async doubleAssetValue(api, args) {
+	async doubleAssetValue(api) {
 	  //  .....
 	}
 
@@ -109,12 +111,63 @@ module.exports = UpdateValues;
 Note that ALL the functions defined in these modules will be called by the client SDK. 
 
 - There are 3 functions `setup` `setNewAssetValue` and `doubleAssetValue` that can be called by issuing the appropriate invoke client side
-- `setup` nor the `constructor` replaces the `chaincode.init` method
 - The `api` in the function is the Fabric stub class that can be used for 'things'
 - `args` is the arguments passed on the invoke. 
 - The constructor contains a 'namespace' to help indentifiy the sets of functions
+- Note that the arguements are split out.
 
-> TODO: add in some help methods in the super class... eg. custom 404 error message if fn doesn't exist when called. Get all the functions, get meta data of the chaincode. 
+### 5: Alteratnive ways of specifing the contracts
+
+*package.json*
+
+Insted of providing the Smart Contracts as exports, you can add details to the package.json. Using the above functions add this to the package.json
+
+```
+  "contracts":{
+    "classes": ["removevalues.js","updatevalues.js"]
+  }
+```
+
+If present this takes precedence over the exports.
+
+*Programatically*
+
+At some point, the smart contracts that need to be invoked need to be registered with the peer. So far this has been done for you, by either specifing them in the package.json or using the `npm start` to call the boot strap code. 
+
+If you want to provide a different `npm start` entry point, that is fine. So long as the smart contracts are registered. There are 2 ways to do this
+
+First you could call the same code that the bootstrap command does
+
+```
+require('fabric-shim').spi.startChaincode();
+```
+
+Or specifically give the classes
+
+```
+const UpdateValues = require('./updatevalues')
+const RemoveValues = require('./removevalues')
+require('fabric-shim').spi.register( [UpdateValues,RemoveValues] );
+```
+
+
+
+
+## Running chaincode in dev mode
+
+This is quite easy - as you need to run the startChaincode command.
+
+```
+$ npx startChaincode --peer.address localhost:7052
+```
+
+In the example above this has been setup in the npm start scripts. So for example
+
+```
+$ npm start -- --peer.address localhost:7052
+```
+
+(this is actually what the peer does; this does mean that any chaincode that is written using the existing chaincode interface will continue to work as is.)
 
 ## Using this chaincode
 
@@ -126,32 +179,46 @@ Each of the functions can be invoked with arbitary arguements. The name of the f
 
 If a namespace is given in the constructor then it will be prefixed separated by a _ (underscore)
 
-> ??should this be a .??
-
 > _assuming that you have a fabric up and running with the approriate environment variables set_
-> _which is a not-trivial amount of work_
 
 ```
-$ peer chaincode install -l node -n myfourthcc -v v0 -p .
-$ peer chaincode instantiate -o localhost:7050 -C mychannel -l node -n myfourthcc -v v0 -c '{"Args":["init"]}' -P 'OR ("Org1MSP.member")'
+$ peer chaincode install --lang node --name mycontract --version v0 --path ~/chaincode-examples
+$ peer chaincode instantiate --orderer localhost:7050 --channelID mychannel --lang node --name mycontract --version v0 -c '{"Args":["org.mynamespace.updates_setup"]}'
 ```
 
 Will get things working...
 Then you can invoke the chaincode via this command.
 
 ```
-$ peer chaincode invoke -o localhost:7050 -C mychannel -c '{"Args":["org.mynamespace.updates_setNewAssetValue","42"]}' -n myfourthcc
+$ peer chaincode invoke --orderer localhost:7050 --channelID mychannel -c '{"Args":["org.mynamespace.removes_getAssetValue"]}' -n mycontract4  
 ```
 
 
-## Functions provided by the SmartContract class
+## Additional support provided by the SmartContract class
 
-These are functions provided by the super class
+In the case where you ask for a function to be executed, it could be the case that this doesn't exist. 
+You can provide you own function to be executed in this case, the default is to throw and error but you're able to customise this if you wish. 
 
-- `getNamespace()`
+For example
 
-## Default SmartContract Functions invokable 
 
-These are functions that can be invoked for all smart contracts
+```
+	/** 
+	 * Sets a namespace so that the functions in this particular class can 
+	 * be separated from others.
+	 */
+	constructor() {
+		super('org.mynamespace.updates');
+		this.$setUnkownFn(this.unkownFn);
+	}
 
-- `$getFunctions` gets a JSON structure for all the functions.
+	/** The function to invoke if something unkown comes in.
+	 * 
+	 */
+	async uknownFn(api){
+		console.log("Big Friendly letters ->>> DON\'T PANIC")
+    throw new Error('Big Friendly letters ->>> DON\'T PANIC')
+	}
+
+```
+
