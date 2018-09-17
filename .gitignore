@@ -63,3 +63,5 @@ typings/
 *.tgz
 
 .vscode
+
+**/_idwallet/**

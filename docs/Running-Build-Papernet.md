@@ -18,8 +18,8 @@ Something along the following pattern.
 
 ## Define the network orderder
 
-Role: SCC
-Organsizations: SCC
+Role: FinReg
+Organsizations: FinReg
 
 ## Add Org
 
