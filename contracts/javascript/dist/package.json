@@ -1,0 +1,16 @@
+{
+  "name": "dist",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm rebuild --prefix ./contract && NODE_PATH=./contract/node_modules node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "fabric-shim": "file:fabric-shim-1.3.0-snapshot.tgz"
+  }
+}

@@ -8,7 +8,7 @@ SPDX-License-Identifier: Apache-2.0
 const fs = require('fs');
 const yaml = require('js-yaml');
 const { FileSystemWallet, Gateway } = require('fabric-network');
-const { CommercialPaper } = require('../../contracts/papernet-js/');
+const { CommercialPaper } = require('../../contracts/javascript/');
 
 // A wallet stores a collection of identities for use
 const wallet = new FileSystemWallet('./_idwallet');
@@ -56,7 +56,7 @@ async function main(){
         console.log('Submit commercial paper buy transaction.');
 
         // buy commercial paper
-        const buyresponse = await contract.submitTransaction('org.papernet.commercialpaper.issue', 'MagnetoCorp', '00001', 'MagnetoCorp','DigiBank', '4900000','2020-05-31',);
+        const buyresponse = await contract.submitTransaction('org.papernet.commercialpaper.buy', 'MagnetoCorp', '00001', 'MagnetoCorp','DigiBank', '4900000','2020-05-31',);
         paper = CommercialPaper.deserialize(buyresponse);
 
         console.log(`${paper.issuer} commercial paper : ${paper.paperNumber} successfully purchased by ${paper.owner}`);

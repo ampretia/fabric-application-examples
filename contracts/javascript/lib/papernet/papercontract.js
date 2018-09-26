@@ -52,6 +52,7 @@ class CommercialPaperContract extends Contract {
     async instantiate(ctx){
         // no implementation required with this example
         // this could be where datamigration is required
+        console.log('Instantiate the contract');
     }
 
     /**
