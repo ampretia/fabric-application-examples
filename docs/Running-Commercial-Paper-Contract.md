@@ -10,7 +10,7 @@ This was written using Ubuntu exclusively but the sample approach is valid for o
 
 - Node chaincode needs node v8.9.x   (as this uses GRPC that has native modules you'll need python)
 - Running fabric will need to have docker
-- Development is best with VScode**
+- Development is best with VSCode
 
 It will be useful to have several command windows open: 
 - one for showing the logs streamed from the docker containers.
@@ -25,7 +25,7 @@ $ git clone https://github.com/ampretia/fabric-application-examples.git
 
 ### Getting an 'unstable' build 
 
-As Fabric 1.3 is yet to be a formal release, use the `getEdgeFabricDocker.sh` in the `infrastructure` directory to pull down the master branch docker containers.
+You can use the script  `getEdgeFabricDocker.sh` in the `infrastructure` directory to pull down the master branch docker containers.
 
 ```
 $ ./fabric-application-examples/infrastructure/getEdgeFabricDocker.sh   
@@ -85,12 +85,6 @@ The `CORE_CHAINCODE_ID_NAME` is needed to identify this running chaincode, and t
 
 In another window (the third and final one), you can issue the commands to interact with the contract. 
 
-Firstly, within the same `basic-network`,  directory start the docker container that will handle `cli` commands: 
-
-```
-$ docker-compose -f ./docker-compose.yml up -d cli 
-```
-
 The commands needed to install and instantiate the chaincode in dev mode are the same as production. Though the install command isn't really functionally needed in dev mode - it is best to keep it.  
 
 ```
@@ -115,9 +109,10 @@ npm install
 
 There are two steps to the application lifecycle.  Firstly a local 'idwallet' needs to be created that contains the credentials for a specific user,  known to the Fabric infrastructure. The application itself can then issue transactions as that user. 
 
-Issue this command to run a script to setup a local folder with the credential
+Issue this command to run a script to setup a local folder with the credential, the first command is just in case you've run this before to clean up.
 
 ```
+$ rm -rf _idwallet$ 
 $ node addToWallet.js
 ```
 
