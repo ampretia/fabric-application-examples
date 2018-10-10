@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "contracts/typescript"
+		},
+		{
+			"path": "contracts/javascript"
+		},
+		{
+			"path": "application/javascript"
+		}
+	],
+	"settings": {
+		"git.ignoreLimitWarning": true
+	}
+}
