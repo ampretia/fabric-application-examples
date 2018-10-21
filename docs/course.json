@@ -1,0 +1,48 @@
+{
+    "tutorials" : [
+        {
+            "domain":"hlf-node-cc",
+            "title":"Writing Chaincode on the cmd line",
+            "uid":"",
+            "aim":"chaincode-dev",
+            "srcuri":"",
+            "prereqs":{
+                "concepts":["node","javascript","cmdline"],
+                "useful":[],
+                "artefacts":[]
+            },
+            "completion":{
+                "concepts":[],
+                "useful":[],
+                "artefacts":[]
+            }
+        },
+        {
+            "domain":"hlf-node-cc",
+            "title":"Writing Chaincode using vsCode",
+            "uid":"",
+            "aim":"chaincode-dev",
+            "srcuri":"",
+            "prereqs":{
+                "concepts":["node","javascript","vscode"],
+                "useful":[],
+                "artefacts":[]
+            },
+            "completion":{
+                "concepts":[],
+                "useful":[],
+                "artefacts":[]
+            }
+        }
+    ],
+    "paths":[
+        { 
+            "domain":"",
+            "title":"",
+            "aims" : [
+                "chaincode-dev",
+                "chaincode-pkg"
+            ] 
+        }
+    ]
+}

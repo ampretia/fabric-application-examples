@@ -1,0 +1,253 @@
+{
+    "info": {
+        "title": "Sample Car Store App",
+        "description": "This is a sample contract for a car store.",
+        "termsOfService": "http://example.com/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.example.com/support",
+            "email": "support@example.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.1"
+    },
+    "contracts": [
+        {
+            "info": {
+                "title": "Sample Car Store App",
+                "description": "This is a sample contract for a car store.",
+                "termsOfService": "http://example.com/terms/",
+                "contact": {
+                    "name": "API Support",
+                    "url": "http://www.example.com/support",
+                    "email": "support@example.com"
+                },
+                "license": {
+                    "name": "Apache 2.0",
+                    "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+                },
+                "version": "1.0.1"
+            },
+            "namespace": "org.papernet.commercialpaper",
+            "operations": [
+                {
+                    "operationId": "instantiate",
+                    "tag": [
+                        "submitTx"
+                    ],
+                    "parameters": [
+                        {
+                            "name": "ctx",
+                            "description": "",
+                            "schema": {
+                                "type": "commercialpapercontext"
+                            }
+                        }
+                    ],
+                    "returns": {
+                        "type": "promise"
+                    }
+                },
+                {
+                    "operationId": "issue",
+                    "tag": [
+                        "submitTx"
+                    ],
+                    "parameters": [
+                        {
+                            "name": "ctx",
+                            "description": "",
+                            "schema": {
+                                "type": "commercialpapercontext"
+                            }
+                        },
+                        {
+                            "name": "issuer",
+                            "description": "",
+                            "schema": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "name": "paperNumber",
+                            "description": "",
+                            "schema": {
+                                "type": "number"
+                            }
+                        },
+                        {
+                            "name": "issueDateTime",
+                            "description": "",
+                            "schema": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "name": "maturityDateTime",
+                            "description": "",
+                            "schema": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "name": "faceValue",
+                            "description": "",
+                            "schema": {
+                                "type": "number"
+                            }
+                        }
+                    ],
+                    "returns": {
+                        "type": "promise"
+                    }
+                },
+                {
+                    "operationId": "buy",
+                    "tag": [
+                        "submitTx"
+                    ],
+                    "parameters": [
+                        {
+                            "name": "ctx",
+                            "description": "",
+                            "schema": {
+                                "type": "object"
+                            }
+                        },
+                        {
+                            "name": "issuer",
+                            "description": "",
+                            "schema": {
+                                "type": "object"
+                            }
+                        },
+                        {
+                            "name": "paperNumber",
+                            "description": "",
+                            "schema": {
+                                "type": "object"
+                            }
+                        },
+                        {
+                            "name": "currentOwner",
+                            "description": "",
+                            "schema": {
+                                "type": "object"
+                            }
+                        },
+                        {
+                            "name": "newOwner",
+                            "description": "",
+                            "schema": {
+                                "type": "object"
+                            }
+                        },
+                        {
+                            "name": "price",
+                            "description": "",
+                            "schema": {
+                                "type": "object"
+                            }
+                        },
+                        {
+                            "name": "purchaseDateTime",
+                            "description": "",
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    ],
+                    "returns": {
+                        "type": "promise"
+                    }
+                },
+                {
+                    "operationId": "redeem",
+                    "tag": [
+                        "submitTx"
+                    ],
+                    "parameters": [
+                        {
+                            "name": "ctx",
+                            "description": "",
+                            "schema": {
+                                "type": "object"
+                            }
+                        },
+                        {
+                            "name": "issuer",
+                            "description": "",
+                            "schema": {
+                                "type": "object"
+                            }
+                        },
+                        {
+                            "name": "paperNumber",
+                            "description": "",
+                            "schema": {
+                                "type": "object"
+                            }
+                        },
+                        {
+                            "name": "redeemingOwner",
+                            "description": "",
+                            "schema": {
+                                "type": "object"
+                            }
+                        },
+                        {
+                            "name": "redeemDateTime",
+                            "description": "",
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    ],
+                    "returns": {
+                        "type": "promise"
+                    }
+                },
+                {
+                    "operationId": "expr",
+                    "tag": [
+                        "submitTx"
+                    ],
+                    "parameters": [
+                        {
+                            "name": "pp",
+                            "description": "",
+                            "schema": {
+                                "type": "commercialpaper"
+                            }
+                        }
+                    ],
+                    "returns": {
+                        "type": "promise"
+                    }
+                }
+            ],
+            "components": {
+                "CommercialPaper": {
+                    "name": "CommercialPaper",
+                    "properties": [
+                        {
+                            "name": "issuer",
+                            "type": "string"
+                        },
+                        {
+                            "name": "owner",
+                            "type": "string"
+                        },
+                        {
+                            "name": "state",
+                            "type": "cpstate"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

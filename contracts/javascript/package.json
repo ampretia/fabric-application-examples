@@ -16,10 +16,10 @@
     },
     "engineStrict": true,
     "author": "hyperledger",
-    "license": "Apacahe-2.0",
+    "license": "Apache-2.0",
     "dependencies": {
-        "fabric-contract-api": "1.3.0-snapshot.13",
-        "fabric-shim": "1.3.0-snapshot.23",
+        "fabric-contract-api": "^1.4.0-snapshot.17",
+        "fabric-shim": "^1.4.0-snapshot.27",
         "uri-js": "^4.2.2"
     },
     "devDependencies": {
