@@ -1,123 +1,52 @@
-# Running the Commercial Paper Contract - PaperNet
-> An opinionated tutorial showing a best practice approach, using Node.js chaincode
+# Running the Commercial Paper Smart Contract and Applications
 
-> Written for the 'unstable' branches of Fabric 
+### Starting the smart contract locally
+Development mode requires that the smart contract is run locally. By running the smart contract locally, you can choose to either output debug statements, or connect a debugger like Visual Studio Code.
+For the purposes of this tutorial, we will deploy the NodeJS version of the smart contract.
 
+1. Navigate to the `contracts/javascript` directory.
+2. Run the following command to install the smart contract dependencies:
 
-## Setup a dev environment. 
+        npm install
+        
+3. Next, start the smart contract in development mode by using the following command:
 
-This was written using Ubuntu exclusively but the sample approach is valid for other platforms. 
+        $ $(npm bin)/fabric-chaincode-node start --peer.address=localhost:7052 --chaincode-id-name=papernet:0
 
-- Node chaincode needs node v8.9.x   (as this uses GRPC that has native modules you'll need python)
-- Running fabric will need to have docker
-- Development is best with VSCode
+To better understand this command, we'll break it down here. The `--chaincode-id-name` sets the identifier for the smart contract. The rest of the command, `$(npm bin)/fabric-chaincode-node start --peer.address=localhost:7052`, is the command to start the smart contract.
 
-It will be useful to have several command windows open: 
-- one for showing the logs streamed from the docker containers.
-- one for the chaincde (when run in dev mode) and 
-- a final one for issuing commands to execute the contract.
+### Installing and instantiating the smart contract
+Issue commands in another command window to interact with the smart contract.
+1. Open a command window and navigate to the `basic-network` directory.
+2. Run the following command to start the docker container that will handle `cli` commands:
 
-First step is to clone this repo to get both the scripts and code for application and contract: 
+        $ docker-compose -f ./docker-compose.yml up -d cli
 
-```
-$ git clone https://github.com/ampretia/fabric-application-examples.git
-```
+3. Install the smart contract using the following command:
 
-### Getting an 'unstable' build 
+        $ docker exec cli peer chaincode install -n papernet -v 0 -p /opt/gopath/src/github.com/javascript -l node
 
-You can use the script  `getEdgeFabricDocker.sh` in the `infrastructure` directory to pull down the master branch docker containers.
+4. Instantiate the smart contract using the following command:
 
-```
-$ ./fabric-application-examples/infrastructure/getEdgeFabricDocker.sh   
-```
+        $ docker exec cli peer chaincode instantiate -n papernet -v 0 -l node -c '{"Args":["org.papernet.commercialpaper:instantiate"]}' -C papernet
 
-## Contract Development Deployment
+## Running the PaperNet client application
 
-### Start fabric in development mode
+Now that the smart contract has been installed and instantiated, and is running locally, the next step is to start the PaperNet sample application. The sample application serves as a demonstration of a client application invoking functions from a running smart contract.
 
-We're going to use the Fabric `basic network` from the `fabric-samples` as the starting point for creating our PAPERNET contract. 
+### Setting up the client application
 
-Within in the 'infrastructure' directory there is a `basic-network` directory. This has a copy of the fabric-samples 
-basic network.  In that copied directory, there is a minor edit to the `docker-compose` file, to enable the peer into debug mode. 
+The client application is contained in the `application` directory of the sample.
+1. Navigate to the `application/javascript` directory.
+2. Run the following command to install the application dependencies:
+        npm install
+3. Now that everything has been installed, a local **idwallet** needs to be created that contains the credentials for a specific user, known to the Fabric infrastructure. Run the following command to create a local folder containing the required credentials:
+        $ node addToWallet.js
 
-Using your editor of choice, find the following lines (one is commented out): 
+### Running the client application
 
-```
-    command: peer node start 
-    # command: peer node start --peer-chaincodedev=true
-```
+The client application can now issue transactions using the identity in the **idwallet**. Looking back at the PaperNet smart contract, there are **issue**, **buy**, and **redeem** transactions that can be performed on **commercial paper** assets.
 
-For debug mode: the line should be `command: peer node start --peer-chaincodedev=true`
-For production mode it should be `command: peer node start`
-
-The next step is start the fabric infrastructure; as we are developing - it is also very useful to be able to watch the output of all the docker containers. This can be done quite easily by using a tool called 'logspout' running in a separate window. From the `infrastructure/basic-network` directory run these commands: 
-
-```
-$ ./start.sh
-$ ../monitor_docker.sh net_basic
-```
-
-This window will now show all the docker container output.
-
-### Start the Chaincode
-
-In another window, you can now start the chaincode from the chaincode directory; this will run as a foreground process that lets you either output debug statements, or connect a debugger such as vscode should you wish. 
-
-We're working with NodeJS chaincode, in this tutorial. 
-
-Change to the `contracts/javascript` directory. 
-
-Run an `npm install` to get all the dependencies ready: 
-
-```
-$ npm install
-```
-
-Next, we can then start the chaincode in development mode: 
-
-```
-$ CORE_CHAINCODE_ID_NAME=papernet:0 $(npm bin)/fabric-chaincode-node start --peer.address=localhost:7052
-```
-
-The `CORE_CHAINCODE_ID_NAME` is needed to identify this running chaincode, and the address of the peer is needed. When the Peer is not in development mode, this is essentially the same code that is used to start contract within the chaincode container. Therefore there is strong fidelity of functionality between dev mode and production. 
-
-### Install and Instantiate the Chaincode
-
-In another window (the third and final one), you can issue the commands to interact with the contract. 
-
-The commands needed to install and instantiate the chaincode in dev mode are the same as production. Though the install command isn't really functionally needed in dev mode - it is best to keep it.  
-
-```
-$ docker exec cli peer chaincode install -n papernet -v 0 -p /opt/gopath/src/github.com/javascript -l node 
-
-$ docker exec cli peer chaincode instantiate -n papernet -v 0 -l node -c '{"Args":["org.papernet.commercialpaper.instantiate"]}' -C mychannel
-```
-
-## Recap
-
-To this point, we've cloned a sample repo, pulled down the latest code, and started a Fabric infrastructure. A contract has been installed on the Fabric peer, and instantiated on the channel. 
-
-The next section gets us ready to submit transactions which will exercise the contract transaction functions, using a sample identity from an id wallet.
- 
-## Application Start
-
-Change to the `application/javascript` directory. Install the requisite packages firstly:
-
-```
-npm install
-```
-
-There are two steps to the application lifecycle.  Firstly a local 'idwallet' needs to be created that contains the credentials for a specific user,  known to the Fabric infrastructure. The application itself can then issue transactions as that user. 
-
-Issue this command to run a script to setup a local folder with the credential, the first command is just in case you've run this before to clean up.
-
-```
-$ rm -rf _idwallet$ 
-$ node addToWallet.js
-```
-
-You can then run the application to issue the transactions (using the identity mentioned) such as issuing, buying and redeeming a Commercial Paper stored on the ledger. 
-
-```
-$ node application.js
-```
+1. To run the client application, run the following command:
+        $ node application.js
+    The application will connect to the Hyperledger Fabric instance, issue a commercial paper, buy the commercial paper, and redeem the commercial paper.

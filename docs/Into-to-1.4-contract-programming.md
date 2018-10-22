@@ -13,11 +13,11 @@ You may have heard of something called Blockchain - and Smart Contracts; Hyperle
 What is available - in the current development stream so you have chance to help shape it - is a high level of abstraction to help develop smart contracts.
 
 ## All new?
-Well maybe not *all* new; we're buildling upon, not destroying the foundations laid by the existing concepts in Hyperledger Fabric - and bring the experience of Hyperledger Composer to aim high.
+Well maybe not *all* new; we're building upon, not destroying the foundations laid by the existing concepts in Hyperledger Fabric - and bring the experience of Hyperledger Composer to aim high.
 
 >All available in the master branch - feedback will help shape the future!
 
-## Chanincode, Smart Contracts, and SDKs
+## Chaincode, Smart Contracts, and SDKs
 
 As with many systems - you'll have some code is running 'server side', 'in the cloud' etc. And some code that is acting as a trigger, a local application, an API etc.
 
@@ -27,22 +27,22 @@ The 'server side' piece of the code
 
 Working with NodeJs,today a Hyperledger Fabric chaincode (Smart Contract) is written to implement two methods `init` and `invoke`.  
 
-Lifecycle of the chaincode container is that you 'install' the chaincocde, you then 'instantiate' it at which point a docker image is created with your code inside, this is then started. (and the init function is called)
+Lifecycle of the chaincode container is that you 'install' the chaincode, you then 'instantiate' it at which point a docker image is created with your code inside, this is then started. (and the `init` function is called)
 
 Applications can then call functions with data (called submitting a transaction) - the `invoke` function being called with the data. 
-Chaincode can be updated with new code, at which point the process is similar. The code is installed, and `updgrade` command is issued, and the `init` funciton is again called should any data migration need to occur.  
+Chaincode can be updated with new code, at which point the process is similar. The code is installed, and `updgrade` command is issued, and the `init` function is again called should any data migration need to occur.  
 
 Within your code, you have access to an API that permits you to manipulate 'world state', along with various other functions such as encrypting data, accessing who submitted the transaction. Data can be returned. 
 
-The difference between the world state before and after the transaciton forms a 'read write set' and it is this that is the basis of what is written to the ledger. 
+The difference between the world state before and after the transaction forms a 'read write set' and it is this that is the basis of what is written to the ledger. 
 
 ## What is different now?
 
-What we found was that people invariably had various named functions in the Smart Contracts; say 'issue' 'buy' 'redeem'. As all of these are routed via a single `invoke` funciton invariably some additional logic had to be written to separate out say the 'issue' from the 'buy'.
+What we found was that people invariably had various named functions in the Smart Contracts; say 'issue' 'buy' 'redeem'. As all of these are routed via a single `invoke` function invariably some additional logic had to be written to separate out say the 'issue' from the 'buy'.
 
-This is repeated over and over again, plus with a general array of arguments, any concept of type safetly is lost. 
+This is repeated over and over again, plus with a general array of arguments, any concept of type safety is lost. 
 
-We now have a highlevel of abstraction that does a lot of the common work for you. 
+We now have a high-level of abstraction that does a lot of the common work for you. 
 
 ## Smart Contract - 'hello world'
 
@@ -123,7 +123,7 @@ For this example, we'll do the following changes
 - transaction2 will become a `getGreeting` function to return the value previous stored on the ledger.
 - instantiate will be modified to set a default greeting
 
-```
+```typescript
     public async instantiate(ctx: Context): Promise<any> {
         let greeting = { text: 'Hi' };
         await ctx.stub.putState('GREETING', Buffer.from(JSON.stringify(greeting)));
@@ -133,7 +133,7 @@ For this example, we'll do the following changes
 We're using the `ctx.stub` to access the API, and `putState` updates the state keyed by 'GREETING', to a buffer of JSON data.
 
 The `setGreeting` function is 
-```
+```typescript
     public async setGreeting(ctx: Context, greeting: string): Promise<any> {
         await ctx.stub.putState('GREETING', Buffer.from(JSON.stringify(greeting)));
         console.info(`setGreeting to ${greeting['text']}`);
@@ -144,7 +144,7 @@ Very similar in structure to the instantiate but the data is coming from the arg
 
 Finally `getGreeting` is probably not surprising; we're returning the buffer directory
 
-```
+```typescript
     public async getGreeting(ctx: Context): Promise<any> {
         let buffer = await ctx.stub.getState('GREETING');
         let greeting = JSON.parse(buffer.toString());       // the prasing of the buffer is to output only
@@ -160,13 +160,13 @@ We have all our business logic coded in the Smart Contract!
 Before we move on to deploying this contract we need to check basic functionality using some unit tests. As part of the Yeoman generator
 a test file and the infrastructure to run them has been created.
 
-Look into the `my-contract.spec.ts` file, and you will see this is setup with the 3 tests already. This is using the mocha
-framework with the chai and sinon assertion and stubbing libraries.
+Look into the `my-contract.spec.ts` file, and you will see this is set up with the 3 tests already. This is using the mocha
+framework with the *chai* and *sinon* assertion and stubbing libraries.
 
 We can modify these tests to match our updated functions as follows. As theses are Typescript files, note there are a few differences to ensure type safety is maintained.
 
 Instantiate function is tested as follows
-```
+```typescript
     describe('#instantiate', () => {
 
         it('should work', async () => {
@@ -183,7 +183,7 @@ Instantiate function is tested as follows
 
 The set greeting function :
 
-```
+```typescript
     describe('#setGreeting', () => {
 
         it('should work', async () => {

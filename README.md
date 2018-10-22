@@ -4,17 +4,20 @@ A test and demo repo showing how the programming model works. Code is AS-IS, and
 
 This code will be folded into the Hyperledger Fabric docs at some point.
 
+[Introduction to 1.4 contract programming model](./docs/Into-to-1.4-contract-programming.md)
 
-[Main notes on running the Commercial Paper example](./docs/Running-Commercial-Paper-Contract.md)
+[Setting up Fabric locally for development](./docs/setting-up-a-local-dev-fabric-infrastructure.md)
 
-## Repo structure
+[Running the Commercial Paper Contract and Application](./docs/Running-Commercial-Paper-Contract.md)
+
+## Repository structure
 
 - docs
   - Documentation - in markdown format
 - application
-  - nodejs - a nodejs application showing connecting to the fabric issue transactions on the smart contract
+  - examples of client applications showing how the programming model works
 - contracts
-  - papernet-js  - a contract written using javascript
+  - javascript and typescript contracts
 - infrastructure
   - the configuration to bring up the fabric infrastructure required.
 

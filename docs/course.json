@@ -1,13 +1,16 @@
 {
+    "info":{
+        "title":"Writing and using Smart Contract and Applications",
+        "overview":"Learn about how to write Smart Contracts and applications. Using variety of languages, include support in vscode "
+    },
     "tutorials" : [
         {
-            "domain":"hlf-node-cc",
-            "title":"Writing Chaincode on the cmd line",
+            "title":"Writing Chaincode in JavaScript",
             "uid":"",
             "aim":"chaincode-dev",
             "srcuri":"",
             "prereqs":{
-                "concepts":["node","javascript","cmdline"],
+                "concepts":["node","javascript"],
                 "useful":[],
                 "artefacts":[]
             },
@@ -18,10 +21,43 @@
             }
         },
         {
-            "domain":"hlf-node-cc",
-            "title":"Writing Chaincode using vsCode",
+            "title":"Writing Chaincode using vsCode Blockchain Extensions",
             "uid":"",
             "aim":"chaincode-dev",
+            "srcuri":"",
+            "prereqs":{
+                "concepts":["node","javascript","vscode"],
+                "useful":[],
+                "artefacts":[]
+            },
+            "completion":{
+                "concepts":[],
+                "useful":[],
+                "artefacts":[]
+            }
+        },
+        {
+            
+            "title":"Packaging Chaincode in JavaScript",
+            "uid":"",
+            "aim":"chaincode-pkg",
+            "srcuri":"",
+            "prereqs":{
+                "concepts":["node","javascript"],
+                "useful":[],
+                "artefacts":[]
+            },
+            "completion":{
+                "concepts":[],
+                "useful":[],
+                "artefacts":[]
+            }
+        },
+        {
+            
+            "title":"Packaging Chaincode using vsCode Blockchain Extensions",
+            "uid":"",
+            "aim":"chaincode-pkg",
             "srcuri":"",
             "prereqs":{
                 "concepts":["node","javascript","vscode"],
@@ -37,12 +73,38 @@
     ],
     "paths":[
         { 
-            "domain":"",
-            "title":"",
-            "aims" : [
-                "chaincode-dev",
-                "chaincode-pkg"
+            "title":"Getting Started with JavaScript Smart Contracts",
+            "elements" : [
+                {
+                    "aim":"chaincode-dev",
+                    "required-concepts":[
+                        "javascript"
+                    ]
+                },
+                {
+                    "aim":"chaincode-pkg",
+                    "required-concepts":[
+                        "javascript"
+                    ]
+                }
             ] 
+        },
+        { 
+            "title":"Getting Started with TypeScript Smart Contracts",
+            "elements" : [
+                {
+                    "aim":"chaincode-dev",
+                    "required-concepts":[
+                        "typescript"
+                    ]
+                },
+                {
+                    "aim":"chaincode-pkg",
+                    "required-concepts":[
+                        "typescript"
+                    ]
+                }
+            ]
         }
     ]
 }
