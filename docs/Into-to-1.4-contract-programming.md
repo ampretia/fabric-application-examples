@@ -140,7 +140,7 @@ The `setGreeting` function is
     }
 ```
 
-Very similar in structure to the instantiate but the data is coming from the arguements.B
+Very similar in structure to the instantiate but the data is coming from the arguments.
 
 Finally `getGreeting` is probably not surprising; we're returning the buffer directory
 

@@ -43,16 +43,29 @@ command: peer node start
 command: peer node start --peer-chaincodedev=true
 ```
 
-If however you wish to keep in production mode, then don't alter the docker-compose file. 
+5. The peer also needs to have the port that chaincode containers talk back to the peer on exposed. This isn't normally required due to the way the peer starts up the docker container for the chaincode. In development mode however, you are taking on the responsibility to start/stop the chaincode.
+
+Adjust the ports for the peer to be as follows by adding in `7052:7052` - this should be just below the line you've already changed.
+
+```yaml
+    ports:
+      - 7051:7051
+      - 7052:7052
+      - 7053:7053
+```
+
+If however you wish to keep in production mode, then don't alter the docker-compose file at all!
 
 ### Starting the Hyperledger Fabric basic-network
 The next step is start Hyperledger Fabric instance. We start according to the configuration specified in the basic-network sample.
-1. Navigate to the `basic-network` directory.
+1. Navigate to the `basic-network` directory, (if not already there)
 2. To start the Hyperledger Fabric instance, run the following command:
 
 ```bash
 ./start.sh
 ```
+
+`start` will also shut down the running fabric if needed first
 
 ### Monitoring Fabric  
 It can be very useful, (and educational) to closely monitor the output of the docker containers. the `docker logs` command can do this - but has a drawback that you need to know the container id first. As Fabric creates docker containers for running smart contacts, this can be tricky. 

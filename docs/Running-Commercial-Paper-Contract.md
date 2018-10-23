@@ -1,10 +1,15 @@
 # Running the Commercial Paper Smart Contract and Applications
 
-### Starting the smart contract locally
-Development mode requires that the smart contract is run locally. By running the smart contract locally, you can choose to either output debug statements, or connect a debugger like Visual Studio Code.
-For the purposes of this tutorial, we will deploy the NodeJS version of the smart contract.
+## Prereqs
 
-1. Navigate to the `contracts/javascript` directory.
+- Smart contract has been written, and is in source form in the `contracts/javascript` directory
+- Fabric `basic-network` has been started in development mode, and the cli container is also running.
+
+## Starting the smart contract locally
+Development mode requires that the smart contract is run locally. By running the smart contract locally, you can choose to either output debug statements, or connect a debugger like Visual Studio Code.
+For the purposes of this tutorial, we will deploy the JavaScript version of the smart contract.
+
+1. Navigate to the `contracts/javascript` directory - this contains the code for the Smart Contract
 2. Run the following command to install the smart contract dependencies:
 
         npm install
@@ -15,7 +20,7 @@ For the purposes of this tutorial, we will deploy the NodeJS version of the smar
 
 To better understand this command, we'll break it down here. The `--chaincode-id-name` sets the identifier for the smart contract. The rest of the command, `$(npm bin)/fabric-chaincode-node start --peer.address=localhost:7052`, is the command to start the smart contract.
 
-### Installing and instantiating the smart contract
+## Installing and instantiating the smart contract
 Issue commands in another command window to interact with the smart contract.
 1. Open a command window and navigate to the `basic-network` directory.
 2. Run the following command to start the docker container that will handle `cli` commands:

@@ -32,36 +32,39 @@
                 "version": "1.0.1"
             },
             "namespace": "org.papernet.commercialpaper",
-            "operations": [
+            "transactions": [
                 {
-                    "operationId": "instantiate",
+                    "transactionId": "instantiate",
                     "tag": [
                         "submitTx"
                     ],
                     "parameters": [
                         {
                             "name": "ctx",
-                            "description": "",
+                            "description": "commercialpapercontext",
                             "schema": {
-                                "type": "commercialpapercontext"
+                                "type": "string"
                             }
                         }
                     ],
                     "returns": {
-                        "type": "promise"
+                        "name": "promise",
+                        "schema": {
+                           "$ref":"#/components/schemas/CommercialPaper"
+                        }
                     }
                 },
                 {
-                    "operationId": "issue",
+                    "transactionId": "issue",
                     "tag": [
                         "submitTx"
                     ],
                     "parameters": [
                         {
                             "name": "ctx",
-                            "description": "",
+                            "description": "commercialpapercontext",
                             "schema": {
-                                "type": "commercialpapercontext"
+                                "type": "string"
                             }
                         },
                         {
@@ -101,11 +104,14 @@
                         }
                     ],
                     "returns": {
-                        "type": "promise"
+                        "name": "promise",
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 },
                 {
-                    "operationId": "buy",
+                    "transactionId": "buy",
                     "tag": [
                         "submitTx"
                     ],
@@ -161,11 +167,14 @@
                         }
                     ],
                     "returns": {
-                        "type": "promise"
+                        "name": "promise",
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 },
                 {
-                    "operationId": "redeem",
+                    "transactionId": "redeem",
                     "tag": [
                         "submitTx"
                     ],
@@ -207,11 +216,14 @@
                         }
                     ],
                     "returns": {
-                        "type": "promise"
+                        "name": "promise",
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 },
                 {
-                    "operationId": "expr",
+                    "transactionId": "expr",
                     "tag": [
                         "submitTx"
                     ],
@@ -220,34 +232,45 @@
                             "name": "pp",
                             "description": "",
                             "schema": {
-                                "type": "commercialpaper"
+                                "type": "string"
                             }
                         }
                     ],
                     "returns": {
-                        "type": "promise"
+                        "name": "promise",
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 }
-            ],
-            "components": {
-                "CommercialPaper": {
-                    "name": "CommercialPaper",
-                    "properties": [
-                        {
-                            "name": "issuer",
+            ]
+        }
+    ],
+    "components": {
+        "schemas": {
+            "CommercialPaper": {
+                "name": "CommercialPaper",
+                "properties": [
+                    {
+                        "name": "issuer",
+                        "schema": {
                             "type": "string"
-                        },
-                        {
-                            "name": "owner",
-                            "type": "string"
-                        },
-                        {
-                            "name": "state",
-                            "type": "cpstate"
                         }
-                    ]
-                }
+                    },
+                    {
+                        "name": "owner",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "state",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ]
             }
         }
-    ]
+    }
 }
