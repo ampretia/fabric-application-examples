@@ -10,13 +10,7 @@
 			"path": "application/javascript"
 		},
 		{
-			"path": "certs"
-		},
-		{
-			"path": "local_fabric"
-		},
-		{
-			"path": "fred"
+			"path": "application/ccp"
 		}
 	],
 	"settings": {

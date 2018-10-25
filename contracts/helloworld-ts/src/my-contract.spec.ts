@@ -17,7 +17,7 @@
 
 import { Context } from 'fabric-contract-api';
 import { ChaincodeStub, ClientIdentity } from 'fabric-shim';
-import 'mocha';
+// import 'mocha';
 import { MyContract } from '.';
 
 import * as chai from 'chai';

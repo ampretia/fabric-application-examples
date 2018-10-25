@@ -5,27 +5,12 @@ SPDX-License-Identifier: Apache-2.0
 'use strict';
 
 // Fabric smart contract classes
-import { Contract, Context, Transaction } from 'fabric-contract-api';
+import { Contract, Transaction } from 'fabric-contract-api';
 
 // PaperNet specifc classes
 import { CommercialPaper } from '../datamodel/paper';
 
-// Utility classes
-import { PaperList } from './paperlist'
-
-/**
- * Define custom context for commercial paper by extending Fabric ContractAPI's Context class
- */
-class CommercialPaperContext extends Context {
-
-    cpList: PaperList;
-
-    constructor() {
-        super();
-        this.cpList = new PaperList(this);
-    }
-
-}
+import CommercialPaperContext from './papercontext';
 
 /**
  * Define commercial paper smart contract by extending Fabric Contract class
@@ -43,7 +28,7 @@ export default class CommercialPaperContract extends Contract {
      *
      *
      */
-    createContext(): CommercialPaperContext {
+    public createContext(): CommercialPaperContext {
         return new CommercialPaperContext();
     }
 
@@ -52,10 +37,10 @@ export default class CommercialPaperContract extends Contract {
      * @param {Context} ctx the transaction context
      */
     @Transaction()
-    async instantiate(ctx: CommercialPaperContext): Promise<Buffer> {
+    public async instantiate(ctx: CommercialPaperContext): Promise<Buffer> {
         // no implementation required with this example
         // this could be where datamigration is required
-        return Buffer.from('instantiate done')
+        return Buffer.from('instantiate done');
     }
 
     /**
@@ -67,12 +52,17 @@ export default class CommercialPaperContract extends Contract {
      * @param {String} issueDateTime paper issue date
      * @param {String} maturityDateTime paper maturity date
      * @param {Integer} faceValue face value of paper
-    */
+     */
     @Transaction()
-    async issue(ctx: CommercialPaperContext, issuer: string, paperNumber: number, issueDateTime: string, maturityDateTime: string, faceValue: number): Promise<Buffer> {
+    public async issue(ctx: CommercialPaperContext,
+                       issuer: string,
+                       paperNumber: number,
+                       issueDateTime: string,
+                       maturityDateTime: string,
+                       faceValue: number): Promise<Buffer> {
 
         // create an instance of the paper
-        let cp = CommercialPaper.createInstance(issuer, paperNumber, issueDateTime, maturityDateTime, faceValue);
+        const cp = CommercialPaper.createInstance(issuer, paperNumber, issueDateTime, maturityDateTime, faceValue);
 
         // Smart contract, rather than paper, moves paper into ISSUED state
         cp.setIssued();
@@ -84,7 +74,7 @@ export default class CommercialPaperContract extends Contract {
         await ctx.cpList.addPaper(cp);
 
         // return this - as the function needs to return buffers - serialize it.
-        return cp.serialize();
+        return ctx.returnPaper(cp);
     }
 
     /**
@@ -97,13 +87,13 @@ export default class CommercialPaperContract extends Contract {
      * @param {String} newOwner new owner of paper
      * @param {Integer} price price paid for this paper
      * @param {String} purchaseDateTime time paper was purchased (i.e. traded)
-    */
+     */
     @Transaction()
-    async buy(ctx, issuer, paperNumber, currentOwner, newOwner, price, purchaseDateTime) {
+    public async buy(ctx, issuer, paperNumber, currentOwner, newOwner, price, purchaseDateTime) {
 
         // Get a key to be used for the paper, and get this from world state
-        let cpKey = CommercialPaper.makeKey([issuer, paperNumber]);
-        let cp = await ctx.cpList.getPaper(cpKey);
+        const cpKey = CommercialPaper.makeKey([issuer, paperNumber]);
+        const cp = await ctx.cpList.getPaper(cpKey);
 
         // Contract now validates the arguments passed against the current state
         if (cp.getOwner() !== currentOwner) {
@@ -117,12 +107,13 @@ export default class CommercialPaperContract extends Contract {
         if (cp.isTrading()) {
             cp.setOwner(newOwner);
         } else {
-            throw new Error('Paper ' + issuer + paperNumber + ' is not trading. Current state = ' + cp.getCurrentState());
+            throw new Error('Paper ' + issuer + paperNumber +
+                            ' is not trading. Current state = ' + cp.getCurrentState());
         }
 
         // make sure that the world state has been updated with the new information
         await ctx.cpList.updateState(cp);
-        return cp.serialize();
+        return ctx.returnPaper(cp);
     }
 
     /**
@@ -132,13 +123,13 @@ export default class CommercialPaperContract extends Contract {
      * @param {Integer} paperNumber paper number for this issuer
      * @param {String} redeemingOwner redeeming owner of paper
      * @param {String} redeemDateTime time paper was redeemed
-    */
+     */
     @Transaction()
-    async redeem(ctx, issuer, paperNumber, redeemingOwner, redeemDateTime) {
+    public async redeem(ctx, issuer, paperNumber, redeemingOwner, redeemDateTime) {
 
         // Get a key to be used for the paper, and get this from world state
-        let cpKey = CommercialPaper.makeKey([issuer, paperNumber]);
-        let cp = await ctx.cpList.getPaper(cpKey);
+        const cpKey = CommercialPaper.makeKey([issuer, paperNumber]);
+        const cp = await ctx.cpList.getPaper(cpKey);
 
         // Check paper is TRADING, not REDEEMED
         if (cp.isRedeemed()) {
@@ -154,12 +145,7 @@ export default class CommercialPaperContract extends Contract {
         }
 
         await ctx.cpList.updatePaper(cp);
-        return cp.serialize();
-    }
-
-    @Transaction()
-    async expr(pp: CommercialPaper) {
-
+        return ctx.returnPaper(cp);
     }
 
 }

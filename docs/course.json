@@ -90,7 +90,7 @@
             "prereqs": {
                 "concepts": [
                     "node",
-                    "javascript"
+                    "java"
                 ],
                 "useful": [],
                 "artefacts": []
@@ -106,6 +106,58 @@
 
         {
             "title": "Getting Started with TypeScript Smart Contracts",
+            "elements": [
+                {
+                    "aim": "chaincode-dev",
+                    "required-concepts": [
+                        "typescript"
+                    ]
+                },
+                {
+                    "aim": "chaincode-pkg",
+                    "required-concepts": [
+                        "typescript"
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Getting Started with JavaScript Smart Contracts",
+            "elements": [
+                {
+                    "aim": "chaincode-dev",
+                    "required-concepts": [
+                        "javascript"
+                    ]
+                },
+                {
+                    "aim": "chaincode-pkg",
+                    "required-concepts": [
+                        "javascript"
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Getting Started with Go Smart Contracts",
+            "elements": [
+                {
+                    "aim": "chaincode-dev",
+                    "required-concepts": [
+                        "typescript"
+                    ]
+                },
+                {
+                    "aim": "chaincode-pkg",
+                    "required-concepts": [
+                        "typescript"
+                    ]
+                }
+            ]
+        },
+        
+        {
+            "title": "Getting Started with Java Smart Contracts",
             "elements": [
                 {
                     "aim": "chaincode-dev",

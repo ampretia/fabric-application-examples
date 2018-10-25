@@ -3,25 +3,25 @@ SPDX-License-Identifier: Apache-2.0
 */
 'use strict';
 
-import { StateList } from '../ledger/statelist';
 import { CommercialPaper } from '../datamodel/paper';
+import { StateList } from '../ledger/statelist';
 
-export class PaperList extends StateList{
+export class PaperList extends StateList {
 
-    constructor(ctx){
+    constructor(ctx) {
         super(ctx, 'org.papernet.commercialpaperlist');
-        this.use(CommercialPaper);
+        this.use(CommercialPaper, CommercialPaper.getType());
     }
 
-    async addPaper(paper){
+    public async addPaper(paper) {
         return this.addState(paper);
     }
 
-    async getPaper(paperKey){
+    public async getPaper(paperKey) {
         return this.getState(paperKey);
     }
 
-    async updatePaper(paper){
+    public async updatePaper(paper) {
         return this.updateState(paper);
     }
 }

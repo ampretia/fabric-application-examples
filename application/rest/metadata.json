@@ -1,7 +1,7 @@
 {
     "info": {
-        "title": "Sample Car Store App",
-        "description": "This is a sample contract for a car store.",
+        "title": "Commercial Paper API",
+        "description": "Hyperledger Fabric being used for Commercial Paper trading",
         "termsOfService": "http://example.com/terms/",
         "contact": {
             "name": "API Support",
@@ -17,43 +17,11 @@
     "contracts": [
         {
             "info": {
-                "title": "Sample Car Store App",
-                "description": "This is a sample contract for a car store.",
-                "termsOfService": "http://example.com/terms/",
-                "contact": {
-                    "name": "API Support",
-                    "url": "http://www.example.com/support",
-                    "email": "support@example.com"
-                },
-                "license": {
-                    "name": "Apache 2.0",
-                    "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-                },
+                "title": "Type 42 - Paper Trading API",
                 "version": "1.0.1"
             },
             "namespace": "org.papernet.commercialpaper",
             "transactions": [
-                {
-                    "transactionId": "instantiate",
-                    "tag": [
-                        "submitTx"
-                    ],
-                    "parameters": [
-                        {
-                            "name": "ctx",
-                            "description": "commercialpapercontext",
-                            "schema": {
-                                "type": "string"
-                            }
-                        }
-                    ],
-                    "returns": {
-                        "name": "promise",
-                        "schema": {
-                           "$ref":"#/components/schemas/CommercialPaper"
-                        }
-                    }
-                },
                 {
                     "transactionId": "issue",
                     "tag": [
@@ -61,52 +29,45 @@
                     ],
                     "parameters": [
                         {
-                            "name": "ctx",
-                            "description": "commercialpapercontext",
-                            "schema": {
-                                "type": "string"
-                            }
-                        },
-                        {
                             "name": "issuer",
-                            "description": "",
+                            "description": "Identity of the issuer of the paper",
                             "schema": {
                                 "type": "string"
                             }
                         },
                         {
                             "name": "paperNumber",
-                            "description": "",
+                            "description": "Unique ID to assign to the created paper",
                             "schema": {
                                 "type": "number"
                             }
                         },
                         {
                             "name": "issueDateTime",
-                            "description": "",
+                            "description": "Date Time of the issue of the paper",
                             "schema": {
                                 "type": "string"
                             }
                         },
                         {
                             "name": "maturityDateTime",
-                            "description": "",
+                            "description": "Date on which the paper will mature",
                             "schema": {
                                 "type": "string"
                             }
                         },
                         {
                             "name": "faceValue",
-                            "description": "",
+                            "description": "Face (unit) value of the paper",
                             "schema": {
                                 "type": "number"
                             }
                         }
                     ],
                     "returns": {
-                        "name": "promise",
+                        "name": "issuedPapaer",
                         "schema": {
-                            "type": "string"
+                            "type": "#/components/schemas/commercialpaper"
                         }
                     }
                 },
@@ -117,24 +78,17 @@
                     ],
                     "parameters": [
                         {
-                            "name": "ctx",
-                            "description": "",
-                            "schema": {
-                                "type": "object"
-                            }
-                        },
-                        {
                             "name": "issuer",
-                            "description": "",
+                            "description": "Identity of the issuer of the paper",
                             "schema": {
-                                "type": "object"
+                                "type": "string"
                             }
                         },
                         {
                             "name": "paperNumber",
-                            "description": "",
+                            "description": "Unique ID to assign to the created paper",
                             "schema": {
-                                "type": "object"
+                                "type": "number"
                             }
                         },
                         {
@@ -180,31 +134,24 @@
                     ],
                     "parameters": [
                         {
-                            "name": "ctx",
-                            "description": "",
-                            "schema": {
-                                "type": "object"
-                            }
-                        },
-                        {
                             "name": "issuer",
-                            "description": "",
+                            "description": "Identity of the issuer of the paper",
                             "schema": {
-                                "type": "object"
+                                "type": "string"
                             }
                         },
                         {
                             "name": "paperNumber",
-                            "description": "",
+                            "description": "Unique ID to assign to the created paper",
                             "schema": {
-                                "type": "object"
+                                "type": "number"
                             }
                         },
                         {
                             "name": "redeemingOwner",
-                            "description": "",
+                            "description": "Identity of the redeeming owner",
                             "schema": {
-                                "type": "object"
+                                "type": "string"
                             }
                         },
                         {
@@ -212,27 +159,6 @@
                             "description": "",
                             "schema": {
                                 "type": "object"
-                            }
-                        }
-                    ],
-                    "returns": {
-                        "name": "promise",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                },
-                {
-                    "transactionId": "expr",
-                    "tag": [
-                        "submitTx"
-                    ],
-                    "parameters": [
-                        {
-                            "name": "pp",
-                            "description": "",
-                            "schema": {
-                                "type": "string"
                             }
                         }
                     ],
