@@ -2,9 +2,9 @@
 import { Context } from 'fabric-contract-api';
 
 // Utility classes
-import { CommercialPaper } from '../datamodel/paper';
-import ISerializer from '../ledger/serializer';
-import StateSerializerFactory from '../ledger/StateSerializerFactory';
+import ISerializer from '../ledger-api/serializer';
+import StateSerializerFactory from '../ledger-api/StateSerializerFactory';
+import { CommercialPaper } from './paper';
 import { PaperList } from './paperlist';
 
 /**

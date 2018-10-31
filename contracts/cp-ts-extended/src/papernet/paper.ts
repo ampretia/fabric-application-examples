@@ -5,7 +5,7 @@ SPDX-License-Identifier: Apache-2.0
 'use strict';
 
 import { Asset, Property } from 'fabric-contract-api';
-import State from '../ledger/state';
+import State from '../ledger-api/state';
 
 // Enumerate commercial paper state values
 enum cpState  {
@@ -18,16 +18,8 @@ enum cpState  {
  * CommercialPaper class extends State class
  * Class will be used by application and smart contract to define a paper
  */
-// @Asset('org.papernet.commercialpaper')
 @Asset()
 export class CommercialPaper extends State {
-
-    /**
-     * Factory method to form back into an object
-     */
-    public static createInstance(issuer, paperNumber, issueDateTime, maturityDateTime, faceValue) {
-        return new CommercialPaper({issuer, paperNumber, issueDateTime, maturityDateTime, faceValue});
-    }
 
     public static getType( ) {
         return 'org.papernet.commercialpaper';
@@ -49,8 +41,7 @@ export class CommercialPaper extends State {
     public faceValue: number;
 
     constructor(obj) {
-        super(CommercialPaper.getType(), [obj.issuer, obj.paperNumber]);
-        Object.assign(this, obj);
+        super('org.papernet.commercialpaper', [obj.issuer, obj.paperNumber], obj);
     }
 
     public getIssuer(): string {

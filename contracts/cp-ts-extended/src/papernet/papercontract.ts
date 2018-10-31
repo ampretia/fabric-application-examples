@@ -8,7 +8,7 @@ SPDX-License-Identifier: Apache-2.0
 import { Contract, Transaction } from 'fabric-contract-api';
 
 // PaperNet specifc classes
-import { CommercialPaper } from '../datamodel/paper';
+import { CommercialPaper } from './paper';
 
 import CommercialPaperContext from './papercontext';
 
@@ -62,7 +62,7 @@ export default class CommercialPaperContract extends Contract {
                        faceValue: number): Promise<Buffer> {
 
         // create an instance of the paper
-        const cp = CommercialPaper.createInstance(issuer, paperNumber, issueDateTime, maturityDateTime, faceValue);
+        const cp = new CommercialPaper({issuer, paperNumber, issueDateTime, maturityDateTime, faceValue});
 
         // Smart contract, rather than paper, moves paper into ISSUED state
         cp.setIssued();

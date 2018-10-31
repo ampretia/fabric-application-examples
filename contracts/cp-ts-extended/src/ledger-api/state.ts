@@ -32,10 +32,11 @@ export default class State {
      * @param {String|Object} type  An indentifiable type of the instance
      * @param {keyParts[]} elements to pull together to make a key for the objects
      */
-    constructor(type, keyParts) {
+    constructor(type, keyParts, obj) {
         this.type = type;
         this.key = State.makeKey(keyParts);
         this.currentState = null;
+        Object.assign(this, obj);
     }
 
     public getType() {

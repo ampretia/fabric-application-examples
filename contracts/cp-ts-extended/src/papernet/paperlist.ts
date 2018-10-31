@@ -3,8 +3,8 @@ SPDX-License-Identifier: Apache-2.0
 */
 'use strict';
 
-import { CommercialPaper } from '../datamodel/paper';
-import { StateList } from '../ledger/statelist';
+import { StateList } from '../ledger-api/statelist';
+import { CommercialPaper } from './paper';
 
 export class PaperList extends StateList {
 
