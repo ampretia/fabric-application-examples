@@ -1,0 +1,21 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "application.js",
+  "scripts": {
+    "test": "rm -rf _idwallet && node addToWallet.js && node application.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fabric-client": "^1.4.0-snapshot.76",
+    "fabric-network": "^1.4.0-snapshot.1",
+    "jsome": "^2.5.0",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "eslint": "^5.6.0"
+  }
+}

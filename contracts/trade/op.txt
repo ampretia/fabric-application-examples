@@ -1,0 +1,1 @@
+[34m2018-11-05 16:21:13.829 UTC [chaincodeCmd] chaincodeInvokeOrQuery -> INFO 001[0m Chaincode invoke successful. result: status:200 payload:"{\"org.example.trade\":{\"functions\":[\"createContext\",\"instantiate\",\"addCommodity\",\"tradeCommodity\"]},\"org.hyperledger.fabric\":{\"functions\":[\"getMetaData\"]}}" 

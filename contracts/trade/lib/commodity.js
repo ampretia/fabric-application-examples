@@ -7,6 +7,10 @@ module.exports = class Commodity {
         Object.assign(this,obj);
     }
 
+    getTradeId(){
+        return this.tradeId;
+    }
+
     getTradingSymbol(){
         return this.tradingSymbol;
     }
@@ -21,6 +25,10 @@ module.exports = class Commodity {
 
     getOwner(){
         return this.owner;
+    }
+
+    static getType(){
+        return 'Commodity'
     }
 
 }

@@ -7,6 +7,37 @@ SPDX-License-Identifier: Apache-2.0
 // Fabric smart contract classes
 const { Contract, Context } = require('fabric-contract-api');
 
+class Commodity {
+
+    constructor(obj){
+        Object.assign(this,obj);
+    }
+
+    getTradeId(){
+        return this.tradeId;
+    }
+
+    getTradingSymbol(){
+        return this.tradingSymbol;
+    }
+
+    getDescription(){
+        return this.description;
+    }
+
+    getQuantity(){
+        return this.quantity;
+    }
+
+    getOwner(){
+        return this.owner;
+    }
+
+    static getType(){
+        return 'Commodity'
+    }
+
+}
 /**
  * Define custom context for commercial paper by extending Fabric ContractAPI's Context class
  */
@@ -27,6 +58,8 @@ class TradeContract extends Contract {
     constructor() {
         // Unique namespace when multiple contracts per chaincode file
         super('org.example.trade');
+
+        console.log(`Process is ${process.pid}`)
     }
 
     /**
@@ -47,11 +80,12 @@ class TradeContract extends Contract {
     }
 
     async addCommodity(ctx,commodityJSON){
-        
+        console.log(commodityJSON)
         let commodity = new Commodity(JSON.parse(commodityJSON));
-        const key = this.ctx.stub.createCompositeKey(this.name,[ commodity.getTradingSymbol() ]);
-
-        await this.ctx.stub.putState(key, Buffer.from(JSON.stringify(commodity)));
+        console.log(commodity);
+        const key = ctx.stub.createCompositeKey('Commodity',[ commodity.getTradingSymbol(), commodity.getTradeId() ]);
+        console.log(key)
+        await ctx.stub.putState(key, Buffer.from(JSON.stringify(commodity)));
     }
 
     /**
@@ -60,16 +94,17 @@ class TradeContract extends Contract {
      * @param {Trade} trade - Object representing the trade (from JSON)
      * @transaction
      */
-    async tradeCommodity(ctx,tradingSymbol,newOwner) {
-        const ledgerkey = this.ctx.stub.createCompositeKey(this.name, [ tradingSymbol ]);
-        const data = await this.ctx.stub.getState(ledgerkey);
+    async tradeCommodity(ctx,tradingSymbol,tradeId,newOwner) {
+        const ledgerkey = ctx.stub.createCompositeKey(Commodity.getType(), [ tradingSymbol,tradeId ]);
+        const data = await ctx.stub.getState(ledgerkey);
 
         let commodity = new Commodity(JSON.parse(data.toString()));
-        commodity.owner = newOwner();
-
-        await this.ctx.stub.putState(ledgerkey, Buffer.from(JSON.stringify(commodity)));
+        commodity.owner = newOwner;
+        
+        await ctx.stub.putState(ledgerkey, Buffer.from(JSON.stringify(commodity)));
+        return commodity;
     }
    
 }
 
-module.exports = Trade;
+module.exports = TradeContract;
