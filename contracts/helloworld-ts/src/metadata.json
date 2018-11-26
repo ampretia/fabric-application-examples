@@ -1,0 +1,86 @@
+{
+    "info": {
+      "title": "custom-serializer",
+      "version": "0.0.1"
+    },
+    "contracts": [
+      {
+        "info": {
+          "title": "",
+          "version": "0.0.1"
+        },
+        "transactions": [
+          {
+            "tag": [
+              "submitTx"
+            ],
+            "parameters": [],
+            "name": "instantiate"
+          },
+          {
+            "tag": [
+              "submitTx"
+            ],
+            "parameters": [
+              {
+                "name": "text",
+                "description": "",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            ],
+            "name": "setGreetingText"
+          },
+          {
+            "return": [
+                {
+                    "name": "greeting",
+                    "description": "Greeting Object",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/components/schemas/greeting"
+                    }
+                }
+            ],
+            "name": "getGreeting",
+            "tag": [
+              "submitTx"
+            ],
+            "parameters": []
+          }
+        ],
+        "namespace": ""
+      },
+      {
+        "info": {
+          "title": "org.hyperledger.fabric",
+          "version": "0.0.1"
+        },
+        "transactions": [
+          {
+            "transactionId": "GetMetadata"
+          }
+        ],
+        "namespace": "org.hyperledger.fabric"
+      }
+    ],
+    "components": {
+        "schemas": {
+            "paper": {
+                "name": "greeting",
+                "required": [
+                    "text"
+                ],
+                "properties": [
+                    {
+                        "name": "text",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ]
+            }
+        }
+    }
+  }

@@ -1,16 +1,14 @@
 {
 	"folders": [
 		{
-			"path": "contracts/typescript"
+			"path": "."
 		},
 		{
-			"path": "contracts/javascript"
+			"path": "contracts/hackathon-js",
+			"name": "hackathon-js"
 		},
 		{
-			"path": "application/javascript"
-		},
-		{
-			"path": "application/ccp"
+			"path": "contracts/hackathon-ts2"
 		}
 	],
 	"settings": {

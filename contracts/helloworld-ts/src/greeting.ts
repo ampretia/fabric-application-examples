@@ -1,3 +1,4 @@
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,7 +16,24 @@
  * limitations under the License.
  */
 
-import { GreetingContract } from './greetingcontract';
-export { GreetingContract } from './greetingcontract';
+import { Object, Property } from 'fabric-contract-api';
 
-export const contracts: any[] = [ GreetingContract ];
+@Object('Greeting')
+export default class Greeting {
+
+    @Property('text')
+    private text: string;
+
+    constructor(text: string) {
+        this.text = text;
+    }
+
+    public setText(text: string): void {
+        this.text = text;
+    }
+
+    public getText(): string {
+        return this.text;
+    }
+
+}

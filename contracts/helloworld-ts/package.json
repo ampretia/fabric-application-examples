@@ -13,7 +13,8 @@
         "pretest": "npm run lint",
         "test": "nyc mocha -r ts-node/register src/**/*.spec.ts",
         "start": "fabric-chaincode-node start",
-        "build": "tsc",
+        "start:dev": "CORE_CHAINCODE_LOGGING_SHIM=debug fabric-chaincode-node start --peer.address=localhost:7052 --chaincode-id-name hellonet:1",
+        "build": "tsc --alwaysStrict --sourceMap",
         "build:watch": "tsc -w",
         "prepublishOnly": "npm run build"
     },
@@ -21,14 +22,14 @@
     "author": "",
     "license": "",
     "dependencies": {
-        "fabric-contract-api": "^1.4.0-snapshot.17",
-        "fabric-shim": "^1.4.0-snapshot.27"
+        "fabric-contract-api": "file:fabric-contract-api-1.4.0-snapshot.tgz",
+        "fabric-shim": "file:fabric-shim-1.4.0-snapshot.tgz"
     },
     "devDependencies": {
         "@types/chai": "^4.1.4",
         "@types/mocha": "^5.2.3",
         "@types/node": "^10.3.6",
-        "@types/sinon": "^5.0.1",
+        "@types/sinon": "5.0.1",
         "@types/sinon-chai": "^3.2.0",
         "chai": "^4.1.2",
         "mocha": "^5.2.0",

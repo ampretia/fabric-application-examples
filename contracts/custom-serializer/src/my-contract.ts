@@ -15,26 +15,31 @@
  * limitations under the License.
  */
 
-import { Context, Contract } from 'fabric-contract-api';
+import { Context, Contract, Returns, Transaction } from 'fabric-contract-api';
 
 export class MyContract extends Contract {
 
+    @Transaction()
     public async instantiate(ctx: Context): Promise<any> {
         const greeting = { text: 'Hi' };
         await ctx.stub.putState('GREETING', Buffer.from(JSON.stringify(greeting)));
+        console.info('Set the default greeting');
     }
 
-    public async setGreeting(ctx: Context, text: string): Promise<any> {
+    @Transaction()
+    public async setGreetingText(ctx: Context, text: string): Promise<any> {
         const greeting = { text };
         await ctx.stub.putState('GREETING', Buffer.from(JSON.stringify(greeting)));
         console.info(`setGreeting to ${greeting.text}`);
     }
 
-    public async getGreeting(ctx: Context): Promise<any> {
+    @Transaction()
+    @Returns('object')
+    public async getGreeting(ctx: Context): Promise<object> {
         const buffer = await ctx.stub.getState('GREETING');
         const greeting = JSON.parse(buffer.toString());
         console.info(`getGreeting of ${greeting.text}`);
-        return buffer;
+        return greeting;
     }
 
 }

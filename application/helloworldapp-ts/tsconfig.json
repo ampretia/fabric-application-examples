@@ -6,10 +6,11 @@
         "module": "commonjs",
         "declaration": true,
         "experimentalDecorators": true,
-        "emitDecoratorMetadata": true
+        "emitDecoratorMetadata": true,
+        "sourceMap": true
     },
     "include": [
-        "./src/**/*", "../../../go/src/github.com/hyperledger/fabric-chaincode-node/fabric-contract-api/lib/annotations/propertyaccessor.js", "../../../ghe/fabric-rest-server/txInvokeRouter.ts"
+        "./src/**/*", "../../../go/src/github.com/hyperledger/fabric-chaincode-node/fabric-contract-api/lib/annotations/propertyaccessor.js"
     ],
     "exclude": [
         "./src/**/*.spec.ts"

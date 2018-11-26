@@ -1,31 +1,29 @@
 {
-    "name": "tradenet-js",
+    "name": "custom-serializer",
     "version": "0.0.1",
-    "description": "Trade Contract",
+    "description": "Hello World",
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
     "engines": {
         "node": ">=8",
-        "npm": ">=5" 
+        "npm": ">=5"
     },
     "scripts": {
         "lint": "tslint -c tslint.json 'src/**/*.ts'",
         "pretest": "npm run lint",
-        "test": "nyc mocha test --recursive",
+        "test": "nyc mocha -r ts-node/register src/**/*.spec.ts",
         "start": "fabric-chaincode-node start",
-        "start:dev": "CORE_CHAINCODE_LOGGING_SHIM=debug fabric-chaincode-node start --peer.address=localhost:7052 --chaincode-id-name tradenet:1",
-        "mocha": "mocha test --recursive",
+        "start:dev": "CORE_CHAINCODE_LOGGING_SHIM=verbose fabric-chaincode-node start --peer.address=localhost:7052 --chaincode-id-name hellonet:1",
         "build": "tsc",
         "build:watch": "tsc -w",
         "prepublishOnly": "npm run build"
     },
     "engineStrict": true,
-    "author": "hyperledger",
-    "license": "Apache-2.0",
+    "author": "",
+    "license": "",
     "dependencies": {
-        "fabric-contract-api": "file:fabric-contract-api-1.4.0-beta.tgz",
-        "fabric-shim": "file:fabric-shim-1.4.0-beta.tgz",
-        "uri-js": "^4.2.2"
+        "fabric-contract-api": "file:fabric-contract-api-1.4.0-snapshot.tgz",
+        "fabric-shim": "file:fabric-shim-1.4.0-snapshot.tgz"
     },
     "devDependencies": {
         "@types/chai": "^4.1.4",
@@ -34,8 +32,6 @@
         "@types/sinon": "^5.0.1",
         "@types/sinon-chai": "^3.2.0",
         "chai": "^4.1.2",
-        "chai-as-promised": "^7.1.1",
-        "eslint": "^4.19.1",
         "mocha": "^5.2.0",
         "nyc": "^12.0.2",
         "sinon": "^6.0.0",
@@ -45,9 +41,13 @@
         "typescript": "^2.9.2"
     },
     "nyc": {
+        "extension": [
+            ".ts",
+            ".tsx"
+        ],
         "exclude": [
             "coverage/**",
-            "test/**"
+            "dist/**"
         ],
         "reporter": [
             "text-summary",

@@ -1,31 +1,33 @@
 {
-    "name": "tradenet-js",
-    "version": "0.0.1",
-    "description": "Trade Contract",
+    "name": "typescript",
+    "version": "0.0.3",
+    "description": "",
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
     "engines": {
         "node": ">=8",
-        "npm": ">=5" 
+        "npm": ">=5"
     },
     "scripts": {
         "lint": "tslint -c tslint.json 'src/**/*.ts'",
         "pretest": "npm run lint",
-        "test": "nyc mocha test --recursive",
-        "start": "fabric-chaincode-node start",
-        "start:dev": "CORE_CHAINCODE_LOGGING_SHIM=debug fabric-chaincode-node start --peer.address=localhost:7052 --chaincode-id-name tradenet:1",
-        "mocha": "mocha test --recursive",
+        "test": "nyc mocha -r ts-node/register src/**/*.spec.ts",
+        "start": "rm -rf _idwallet && node dist/addToWallet.js && node dist/application.js",
         "build": "tsc",
         "build:watch": "tsc -w",
         "prepublishOnly": "npm run build"
     },
     "engineStrict": true,
-    "author": "hyperledger",
-    "license": "Apache-2.0",
+    "author": "",
+    "license": "",
     "dependencies": {
-        "fabric-contract-api": "file:fabric-contract-api-1.4.0-beta.tgz",
-        "fabric-shim": "file:fabric-shim-1.4.0-beta.tgz",
-        "uri-js": "^4.2.2"
+        "@types/js-yaml": "^3.11.2",
+        "fabric-ca-client": "file:fabric-ca-client-1.4.0-snapshot.tgz",
+        "fabric-client": "file:fabric-client-1.4.0-snapshot.tgz",
+        "fabric-common": "file:fabric-common-1.4.0-snapshot.tgz",
+        "fabric-network": "file:fabric-network-1.4.0-snapshot.tgz",
+        "js-yaml": "^3.12.0",
+        "jsome": "^2.5.0"
     },
     "devDependencies": {
         "@types/chai": "^4.1.4",
@@ -34,8 +36,6 @@
         "@types/sinon": "^5.0.1",
         "@types/sinon-chai": "^3.2.0",
         "chai": "^4.1.2",
-        "chai-as-promised": "^7.1.1",
-        "eslint": "^4.19.1",
         "mocha": "^5.2.0",
         "nyc": "^12.0.2",
         "sinon": "^6.0.0",
@@ -45,9 +45,13 @@
         "typescript": "^2.9.2"
     },
     "nyc": {
+        "extension": [
+            ".ts",
+            ".tsx"
+        ],
         "exclude": [
             "coverage/**",
-            "test/**"
+            "dist/**"
         ],
         "reporter": [
             "text-summary",

@@ -40,9 +40,10 @@ export default class TradeContract extends Contract {
     }
 
     @Transaction()
-    public async addCommodity(ctx, commodity: Commodity): Promise<void> {
+    public async addCommodity(ctx, commodity: Commodity): Promise<Commodity> {
         console.log(`Adding ${commodity.getDescription()}`);
         await ctx.commodityList.addCommodity(commodity);
+        return commodity;
     }
 
     /**

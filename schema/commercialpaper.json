@@ -1,0 +1,129 @@
+{
+    "info": {
+        "title": "Papernet - Commercial Paper Trading",
+        "description": "Commercial Paper Trading",
+        "termsOfService": "http://example.com/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.example.com/support",
+            "email": "support@example.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.1"
+    },
+    "contracts": [
+        {
+            "info": {
+                "title": "org.example.trade",
+                "version": "0.0.1"
+            },
+            "transactions": [
+                {
+                    "name": "instantiate",
+                    "tag": [
+                        "submitTx"
+                    ],
+                    "parameters": [],
+                    "returns": {
+                        "type": "promise"
+                    }
+                },
+                {
+                    "name": "addCommodity",
+                    "tag": [
+                        "submitTx"
+                    ],
+                    "parameters": [
+                        {
+                            "name": "commodity",
+                            "description": "",
+                            "schema": {
+                                "$ref": "#/components/schemas/Commodity"
+                            }
+                        }
+                    ],
+                    "returns": {
+                        "$ref": "#/components/schemas/Commodity"
+                    }
+                },
+                {
+                    "name": "tradeCommodity",
+                    "tag": [
+                        "submitTx"
+                    ],
+                    "parameters": [
+                        {
+                            "name": "tradingSymbol",
+                            "description": "",
+                            "schema": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "name": "tradeId",
+                            "description": "",
+                            "schema": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "name": "newOwner",
+                            "description": "",
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    ],
+                    "returns": {
+                        "type": "promise"
+                    }
+                }
+            ],
+            "namespace": "org.example.trade"
+        },
+        {
+            "info": {
+                "title": "org.hyperledger.fabric",
+                "version": "0.0.1"
+            },
+            "transactions": [
+                {
+                    "transactionId": "getMetaData"
+                }
+            ],
+            "namespace": "org.hyperledger.fabric"
+        }
+    ],
+    "components": {
+        "schemas": {
+            "Commodity": {
+                "name": "Commodity",
+                "properties": [
+                    {
+                        "name": "tradeId",
+                        "type": "string"
+                    },
+                    {
+                        "name": "tradingSymbol",
+                        "type": "string"
+                    },
+                    {
+                        "name": "description",
+                        "type": "string"
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "number"
+                    },
+                    {
+                        "name": "owner",
+                        "type": "string"
+                    }
+                ]
+            }
+        }
+    }
+}

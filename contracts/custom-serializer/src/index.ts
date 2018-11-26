@@ -15,7 +15,16 @@
  * limitations under the License.
  */
 
-import { GreetingContract } from './greetingcontract';
-export { GreetingContract } from './greetingcontract';
+import { MyContract } from './my-contract';
+export { MyContract } from './my-contract';
 
-export const contracts: any[] = [ GreetingContract ];
+import CustomJSONSerializer from './customjsonserializer';
+
+export const contracts: any[] = [ MyContract ];
+
+export const serializers: any = {
+    transaction: 'jsonSerializer',
+    serializers: {
+        jsonSerializer : CustomJSONSerializer
+    }
+}

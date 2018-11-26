@@ -1,0 +1,49 @@
+{
+    "contracts": [
+        {
+            "transactions": [
+                {
+                    "name": "addCommodity",
+                    "parameters": [
+                        {
+                            "name": "commodity",
+                            "description": "",
+                            "schema": {
+                                "$ref": "#/components/schemas/Commodity"
+                            }
+                        }
+                    ],
+                    "returns": {
+                        "$ref": "#/components/schemas/Commodity"
+                    },
+                    "style": "json"
+                }
+            ],
+            "namespace": "org.example.trade"
+        }
+    ],
+    "components": {
+        "schemas": {
+            "Commodity": {
+                "type": "object",
+                "properties": {
+                    "tradeId": {
+                        "type": "string"
+                    },
+                    "tradingSymbol": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "quantity": {
+                        "type": "number"
+                    },
+                    "owner": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -9,7 +9,7 @@
         "emitDecoratorMetadata": true
     },
     "include": [
-        "./src/**/*", "../../../go/src/github.com/hyperledger/fabric-chaincode-node/fabric-contract-api/lib/annotations/propertyaccessor.js", "../../../ghe/fabric-rest-server/txInvokeRouter.ts"
+        "./src/**/*"
     ],
     "exclude": [
         "./src/**/*.spec.ts"
