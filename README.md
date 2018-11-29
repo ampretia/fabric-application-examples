@@ -21,4 +21,4 @@ This code will be folded into the Hyperledger Fabric docs at some point.
 - infrastructure
   - the configuration to bring up the fabric infrastructure required.
 
-The hope would be to add matching/equivalent contracts and applications in the other languages (Golang, Java, Typescript .net)
+The intent is to add matching/equivalent contracts and applications in the other languages (Golang, Java, Typescript .net)

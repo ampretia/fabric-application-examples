@@ -1,25 +1,36 @@
 'use strict';
 
 const Ajv = require('ajv')
-const cntrtData = require('./example-full.json');
-const jsome = require('jsome')
+// const cntrtData = require('./example-full.json');
+// const jsome = require('jsome')
 
 let schemaList = []
-for (let name in cntrtData.components.schemas){
-    let s = cntrtData.components.schemas[name]
-    let props = {}
-    s.properties.forEach((e)=>{
-        props[e.name]=e;
-    })
+// for (let name in cntrtData.components.schemas){
+//     let s = cntrtData.components.schemas[name]
+//     let props = {}
+//     s.properties.forEach((e)=>{
+//         props[e.name]=e;
+//     })
 
 
-    s.properties = props;
-    schemaList.push(s);
-};
+//     s.properties = props;
+//     schemaList.push(s);
+// };
 
-schemaList.push({
-    "type": "string"
-  })
+schemaList.push(
+  { '$id': 'Greeting',
+    type: 'object',
+    additionalProperties: false,
+    properties: { 
+      text: { 
+        name: 'text', 
+        schema: {
+          type :'string'
+        } 
+      } 
+    } 
+  }
+)
 
 var ajv = new Ajv({ useDefaults: true, 
                     coerceTypes: false, 
@@ -28,12 +39,10 @@ var ajv = new Ajv({ useDefaults: true,
                  });
 // ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-04.json'));
 
-
-let sv = ajv.compile({
-    "type": "string"
-  });
-let valid = sv("gello")
+let sv = ajv.getSchema('Greeting')
+let valid = sv({wibble:false})
 console.log(valid);
+console.log(sv.errors)
 // var data = { "first": "peso" , "lastName":"penguin","age":"10"};
 // let ownerValidator = ajv.getSchema('owner')
 

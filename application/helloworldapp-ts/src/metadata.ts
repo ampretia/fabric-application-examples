@@ -58,23 +58,14 @@ async function main() {
         const network = await gateway.getNetwork('mychannel');
 
         // Get addressability to commercial paper contract
-        const contract = await network.getContract('hellonet', 'Greeting');
+        const contract = await network.getContract('hellonet', 'org.hyperledger.fabric');
 
         // get the transactions
-        const setGreeting = await contract.createTransaction('setGreeting');
-        const getGreeting = await contract.createTransaction('getGreeting');
+        const getMetadata = await contract.createTransaction('GetMetadata');
 
-        const sentGreeting = { text: 'Hello World'};
-        console.log(`\n>> Setting greating to 'Hello World'`);
-        await setGreeting.submit(JSON.stringify(sentGreeting));
+        const metadata = JSON.parse((await getMetadata.evaluate()).toString());
 
-        console.log('>> Greeting set');
-
-        const receivedGreeting = await getGreeting.evaluate();
-        // we know from the metadata that this is a of an object type, and the structure of it
-        // therefore we can demarshall this into a the string greeting
-        const demarshalled = JSON.parse(receivedGreeting.toString());
-        console.log(`\n>> The greeting is '${demarshalled.text}'`);
+        jsome(metadata);
 
     } catch (error) {
         console.log(`Error processing transaction. ${error}`);
