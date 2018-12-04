@@ -19,8 +19,10 @@ import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 import * as jsome from 'jsome';
 import * as path from 'path';
+import * as readlineSync from 'readline-sync';
 
 import { FileSystemWallet, Gateway } from 'fabric-network';
+import GreetingAPI from './greetingapi';
 
 // A wallet stores a collection of identities for use
 const wallet = new FileSystemWallet('./_idwallet');
@@ -57,24 +59,22 @@ async function main() {
         // Get addressability to PaperNet network
         const network = await gateway.getNetwork('mychannel');
 
-        // Get addressability to commercial paper contract
-        const contract = await network.getContract('hellonet', 'Greeting');
+        const greetingAPI = new GreetingAPI(network);
+        await greetingAPI.init('hellonet');
 
-        // get the transactions
-        const setGreeting = await contract.createTransaction('setGreeting');
-        const getGreeting = await contract.createTransaction('getGreeting');
-
-        const sentGreeting = { text: 'Hello World'};
-        console.log(`\n>> Setting greating to 'Hello World'`);
-        await setGreeting.submit(JSON.stringify(sentGreeting));
-
+        const sentGreeting = { text: 'Hi there!!' };
+        console.log(`\n>> Setting greating to 'Hi there!!'`);
+        await greetingAPI.setGreeting(sentGreeting);
         console.log('>> Greeting set');
 
-        const receivedGreeting = await getGreeting.evaluate();
-        // we know from the metadata that this is a of an object type, and the structure of it
-        // therefore we can demarshall this into a the string greeting
-        const demarshalled = JSON.parse(receivedGreeting.toString());
-        console.log(`\n>> The greeting is '${demarshalled.text}'`);
+        const text = await greetingAPI.getGreetingText();
+        console.log(`\n>> The greeting is '${text}'`);
+
+        const userName = readlineSync.question('May I have your name? ');
+        await greetingAPI.setGreetingText(`Hello World ${userName}!!`);
+
+        const text2 = await greetingAPI.getGreetingText();
+        console.log(`\n>> The greeting is '${text2}'`);
 
     } catch (error) {
         console.log(`Error processing transaction. ${error}`);

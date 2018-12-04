@@ -21,11 +21,32 @@ import { Object, Property } from 'fabric-contract-api';
 @Object('Greeting')
 export default class Greeting {
 
+    public static validate(greeting: Greeting) {
+        const text = greeting.text;
+
+        if (text.length !== greeting.textLength) {
+            throw new Error('Length incorrectly set');
+        }
+
+        if (text.split(' ').length !== greeting.wordCount) {
+            throw new Error('Word count incorrectly set');
+        }
+
+    }
+
     @Property('text')
     private text: string;
 
+    @Property('length')
+    private textLength: number;
+
+    @Property('wordcount')
+    private wordCount: number;
+
     constructor(text: string) {
         this.text = text;
+        this.textLength = text.length;
+        this.wordCount = text.split(' ').length;
     }
 
     public setText(text: string): void {

@@ -1,0 +1,29 @@
+{
+   "contracts": {
+      "contract-one":{
+
+        },
+      "contract-two":{
+
+        }
+     },
+     
+
+  "components": {
+    "schemas": {
+      "Greeting": {
+        "$id": "Greeting",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": [
+          {
+            "name": "text",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

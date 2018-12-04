@@ -1,4 +1,5 @@
 {
+  "$schema": "https://fabric-shim.github.io/contract-schema.json",
   "info": {
     "title": "Commercial Paper Smart Contract",
     "description": "Smart Contract definitions for Commercial Paper, issuing and trading",
@@ -14,8 +15,8 @@
     },
     "version": "1.0.1"
   },
-  "contracts": [
-    {
+  "contracts": {
+    "fred":{
       "name": "org.papernet.commercialpaper",
       "info": {
         "title": "Commercial Paper Trading Functions",
@@ -213,7 +214,7 @@
         }
       ]
     }
-  ],
+  },
   "components": {
     "schemas": {
       "owner": {

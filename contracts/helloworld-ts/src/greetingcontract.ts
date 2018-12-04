@@ -15,10 +15,11 @@
  * limitations under the License.
  */
 
-import { Context, Contract, Returns, Transaction } from 'fabric-contract-api';
+import { Contract, Info, Returns, Transaction } from 'fabric-contract-api';
 import Greeting from './greeting';
 import GreetingContext from './greetingcontext';
 
+@Info({name: 'GreetingContract', description: 'The description'})
 export class GreetingContract extends Contract {
 
     public constructor() {
@@ -56,6 +57,8 @@ export class GreetingContract extends Contract {
     @Transaction()
     public async setGreeting(ctx: GreetingContext, greeting: Greeting): Promise<void> {
         console.info('setGreeting');
+
+        Greeting.validate(greeting);
 
         await ctx.stub.putState('GREETING', ctx.toLedgerBuffer(greeting));
         console.info(`setGreeting to ${greeting}`);

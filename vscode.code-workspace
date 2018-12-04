@@ -4,11 +4,7 @@
 			"path": "."
 		},
 		{
-			"path": "contracts/hackathon-js",
-			"name": "hackathon-js"
-		},
-		{
-			"path": "contracts/hackathon-ts2"
+			"path": "contracts/helloworld-ts"
 		}
 	],
 	"settings": {

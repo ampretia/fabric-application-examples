@@ -1,3 +1,4 @@
+#!/bin/bash
 #set -ev
 ARG1=${1:-Hello}
 docker exec cli peer chaincode invoke --orderer orderer.example.com:7050 --channelID mychannel -c "{\"Args\":[\"Greeting:setGreetingText\",\"${ARG1}\"]}" -n hellonet 2>&1
