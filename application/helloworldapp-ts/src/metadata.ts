@@ -23,8 +23,9 @@ import * as path from 'path';
 import { FileSystemWallet, Gateway } from 'fabric-network';
 
 // A wallet stores a collection of identities for use
-const wallet = new FileSystemWallet('./_idwallet');
-const fixtures = path.resolve(__dirname, '../../../infrastructure/basic-network');
+const walletPath = path.resolve(__dirname, '../_idwallet');
+const wallet = new FileSystemWallet(walletPath);
+const fixtures = path.resolve(__dirname, '../local_fabric');
 
 async function main() {
 
@@ -37,10 +38,10 @@ async function main() {
         // define the identity to use
         const identityLabel = 'User1@org1.example.com';
 
-        const ccpPath = path.join(fixtures, 'network.yaml');
+        const ccpPath = path.join(fixtures, 'connection.json');
 
         // Load connection profile; will be used to locate a gateway
-        const connectionProfile = yaml.safeLoad(fs.readFileSync(ccpPath, 'utf8'));
+        const connectionProfile = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
 
         // Set connection options; use 'admin' identity from application wallet
         const connectionOptions = {
@@ -58,7 +59,7 @@ async function main() {
         const network = await gateway.getNetwork('mychannel');
 
         // Get addressability to commercial paper contract
-        const contract = await network.getContract('hellonet', 'org.hyperledger.fabric');
+        const contract = await network.getContract('helloworld-ts', 'org.hyperledger.fabric');
 
         // get the transactions
         const getMetadata = await contract.createTransaction('GetMetadata');

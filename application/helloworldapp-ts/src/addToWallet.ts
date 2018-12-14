@@ -9,10 +9,11 @@ import { FileSystemWallet, X509WalletMixin } from 'fabric-network';
 import * as fs from 'fs';
 import * as path from 'path';
 
-const fixtures = path.resolve(__dirname, '../../../infrastructure/basic-network');
+const fixtures = path.resolve(__dirname, '../local_fabric');
+const walletPath = path.resolve(__dirname, '../_idwallet');
 
 // A wallet stores a collection of identities for use
-const wallet = new FileSystemWallet('./_idwallet');
+const wallet = new FileSystemWallet(walletPath);
 
 async function main() {
 
@@ -20,9 +21,9 @@ async function main() {
     try {
 
         // define the identity to use
-        const credPath = path.join(fixtures , '/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com');
-        const cert = fs.readFileSync(path.join(credPath , '/msp/signcerts/User1@org1.example.com-cert.pem')).toString();
-        const key = fs.readFileSync(path.join(credPath , '/msp/keystore/c75bd6911aca808941c3557ee7c97e90f3952e379497dc55eb903f31b50abc83_sk')).toString();
+
+        const cert = fs.readFileSync(path.join(fixtures , 'certificate')).toString();
+        const key = fs.readFileSync(path.join(fixtures , 'privateKey')).toString();
         const identityLabel = 'User1@org1.example.com';
 
         // prep wallet and test it at the same time
