@@ -22,8 +22,8 @@ async function main() {
 
         // define the identity to use
 
-        const cert = fs.readFileSync(path.join(fixtures , 'certificate')).toString();
-        const key = fs.readFileSync(path.join(fixtures , 'privateKey')).toString();
+        const cert = fs.readFileSync(path.join(fixtures, 'certificate')).toString();
+        const key = fs.readFileSync(path.join(fixtures, 'privateKey')).toString();
         const identityLabel = 'User1@org1.example.com';
 
         // prep wallet and test it at the same time

@@ -1,0 +1,194 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+volumes:
+  orderer1.magnetocorp.example.com:
+  peer1.magnetocorp.example.com:
+  peer5.digibank.example.com:
+
+networks:
+  commercialpaper-net:
+    external:
+      name: commercialpaper-net  
+services:
+  camagnetocorp:
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=camagnetocorp
+      - FABRIC_CA_SERVER_TLS_ENABLED=false
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.magnetocorp.example.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/97e788fcb8ef369faba6b1d7de2ef535eec7195de1147beb2ea665e1c8f15681_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/magnetocorp.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: camagnetocorp
+    networks:
+      - commercialpaper-net
+
+  cadigibank:
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=cadigibank
+      - FABRIC_CA_SERVER_TLS_ENABLED=false
+    ports:
+      - "8054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.digibank.example.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/d2084f869a10d7055d7af47cdb2e06e869e72121f07b7278cb1e6f3239e63623_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/digibank.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: cadigibank
+    networks:
+      - commercialpaper-net
+
+  orderer1.magnetocorp.example.com:
+    container_name: orderer1.magnetocorp.example.com
+    image: hyperledger/fabric-orderer
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=DEBUG
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=ordererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      - ORDERER_GENERAL_TLS_ENABLED=false
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: orderer
+    volumes:
+    - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+    - ./crypto-config/ordererOrganizations/magnetocorp.example.com/orderers/orderer1.magnetocorp.example.com/msp/:/var/hyperledger/orderer/msp
+    - ./crypto-config/ordererOrganizations/magnetocorp.example.com/orderers/orderer1.magnetocorp.example.com/tls/:/var/hyperledger/orderer/tls
+    - orderer1.magnetocorp.example.com:/var/hyperledger/production/orderer
+    ports:
+      - 7050:7050
+    networks:
+      - commercialpaper-net
+
+  couchdb1:
+    container_name: couchdb1
+    image: hyperledger/fabric-couchdb
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - "5984:5984"
+    networks:
+      - commercialpaper-net
+
+  peer1.magnetocorp.example.com:
+    container_name: peer1.magnetocorp.example.com
+    image: hyperledger/fabric-peer
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=commercialpaper-net
+      - FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_ID=peer1.magnetocorp.example.com
+      - CORE_PEER_ADDRESS=peer1.magnetocorp.example.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.magnetocorp.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.magnetocorp.example.com:7051
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_LOCALMSPID=magnetocorpMSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb1:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+      - CORE_PEER_TLS_ENABLED=false
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/magnetocorp.example.com/peers/peer1.magnetocorp.example.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/magnetocorp.example.com/peers/peer1.magnetocorp.example.com/tls:/etc/hyperledger/fabric/tls
+        - peer1.magnetocorp.example.com:/var/hyperledger/production
+    ports:
+      - 7051:7051
+      - 7053:7053
+    depends_on:
+      - couchdb1
+    networks:
+      - commercialpaper-net
+
+  couchdb5:
+    container_name: couchdb5
+    image: hyperledger/fabric-couchdb
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - "6984:5984"
+    networks:
+      - commercialpaper-net
+
+  peer5.digibank.example.com:
+    container_name: peer5.digibank.example.com
+    image: hyperledger/fabric-peer
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=commercialpaper-net
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_ID=peer5.digibank.example.com
+#      - CORE_PEER_ADDRESS=peer5.digibank.example.com:7051
+#      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer5.digibank.example.com:7051
+#      - CORE_PEER_GOSSIP_BOOTSTRAP=peer5.digibank.example.com:7051
+      - CORE_PEER_ADDRESS=peer5.digibank.example.com:8051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:8051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer5.digibank.example.com:8051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer5.digibank.example.com:8051
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_LOCALMSPID=digibankMSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb5:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+      - CORE_PEER_TLS_ENABLED=false
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/digibank.example.com/peers/peer5.digibank.example.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/digibank.example.com/peers/peer5.digibank.example.com/tls:/etc/hyperledger/fabric/tls
+        - peer5.digibank.example.com:/var/hyperledger/production
+    ports:
+      - 8051:8051
+      - 8053:7053
+    depends_on:
+      - couchdb5
+    networks:
+      - commercialpaper-net
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=peer1.magnetocorp.example.com:7051
+      - CORE_PEER_LOCALMSPID=magnetocorpMSP
+      - CORE_PEER_TLS_ENABLED=false
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/magnetocorp.example.com/users/Admin@magnetocorp.example.com/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./../chaincode/:/opt/gopath/src/github.com/chaincode
+        - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        - ./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+        - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+    depends_on:
+      - orderer1.magnetocorp.example.com
+      - peer1.magnetocorp.example.com
+      - peer5.digibank.example.com
+    networks:
+      - commercialpaper-net

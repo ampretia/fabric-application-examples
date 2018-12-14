@@ -65,3 +65,6 @@ typings/
 .vscode
 
 **/_idwallet/**
+
+*.code-workspace
+hyperledger/**

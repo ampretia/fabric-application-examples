@@ -5,7 +5,7 @@ export default class Commodity {
     description: string;
     quantity: number;
     owner: string;
-    constructor(obj: any);
+    constructor(obj: Commodity);
     getTradeId(): string;
     getTradingSymbol(): string;
     getDescription(): string;

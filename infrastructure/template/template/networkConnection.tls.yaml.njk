@@ -1,0 +1,129 @@
+---
+#
+# The network connection profile provides client applications the information about the target
+# blockchain network that are necessary for the applications to interact with it. These are all
+# knowledge that must be acquired from out-of-band sources. This file provides such a source.
+#
+name: "{{network.name}}"
+
+#
+# Any properties with an "x-" prefix will be treated as application-specific, exactly like how naming
+# in HTTP headers or swagger properties work. The SDK will simply ignore these fields and leave
+# them for the applications to process. This is a mechanism for different components of an application
+# to exchange information that are not part of the standard schema described below. In particular,
+# the "x-type" property with the "hlfv1" value example below is used by Hyperledger Composer to
+# determine the type of Fabric networks (v0.6 vs. v1.0) it needs to work with.
+#
+x-type: "hlfv1"
+
+#
+# Describe what the target network is/does.
+#
+description: "{{network.description}}"
+
+#
+# Schema version of the content. Used by the SDK to apply the corresponding parsing rules.
+#
+version: "1.0"
+
+#
+# [Optional]. But most apps would have this section so that channel objects can be constructed
+# based on the content below. If an app is creating channels, then it likely will not need this
+# section.
+#
+
+#
+# list of participating organizations in this network
+#
+organizations:
+  Org1:
+    mspid: {{organizations[0].name}}MSP
+
+    peers:
+      - peer1.{{organizations[0].name}}.example.com
+
+    # [Optional]. Certificate Authorities issue certificates for identification purposes in a Fabric based
+    # network. Typically certificates provisioning is done in a separate process outside of the
+    # runtime network. Fabric-CA is a special certificate authority that provides a REST APIs for
+    # dynamic certificate management (enroll, revoke, re-enroll). The following section is only for
+    # Fabric-CA servers.
+    certificateAuthorities:
+      - ca{{organizations[0].name}}
+
+    adminPrivateKey:
+      path: {{environment.cryptodir}}/peerOrganizations/{{organizations[0].name}}.example.com/users/Admin@{{organizations[0].name}}.example.com/msp/keystore/8401e58b739fb67ed6c8b3d4c52256de36a613657618cf614768fef71326504c_sk
+    signedCert:
+      path: {{environment.cryptodir}}/peerOrganizations/{{organizations[0].name}}.example.com/users/Admin@{{organizations[0].name}}.example.com/msp/signcerts/Admin@{{organizations[0].name}}.example.com-cert.pem
+
+
+  Org2:
+    mspid: {{organizations[1].name}}MSP
+    peers:
+      - peer5.{{organizations[1].name}}.example.com
+    certificateAuthorities:
+      - ca{{organizations[1].name}}
+    adminPrivateKey:
+      path: {{environment.cryptodir}}/peerOrganizations/{{organizations[1].name}}.example.com/users/Admin@{{organizations[1].name}}.example.com/msp/keystore/9fbcaac2843325754967677da6e2b716835cecc54610a2fcc60c9b5fcabbb713_sk
+    signedCert:
+      path: {{environment.cryptodir}}/peerOrganizations/{{organizations[1].name}}.example.com/users/Admin@{{organizations[1].name}}.example.com/msp/signcerts/Admin@{{organizations[1].name}}.example.com-cert.pem
+
+
+# List of peers to send various requests to, including endorsement, query
+# and event listener registration.
+#
+peers:
+  peer1.{{organizations[0].name}}.example.com:
+    # this URL is used to send endorsement and query requests
+    url: grpcs://localhost:7051
+
+    grpcOptions:
+      ssl-target-name-override: peer1.{{organizations[0].name}}.example.com
+      request-timeout: 120001
+
+    tlsCACerts:
+      path: {{environment.cryptodir}}/peerOrganizations/{{organizations[0].name}}.example.com/peers/peer1.{{organizations[0].name}}.example.com/msp/tlscacerts/tlsca.{{organizations[0].name}}.example.com-cert.pem
+
+
+  peer5.{{organizations[1].name}}.example.com:
+    url: grpcs://localhost:8051
+    grpcOptions:
+      ssl-target-name-override: peer5.{{organizations[1].name}}.example.com
+      request-timeout: 120001
+    tlsCACerts:
+      path: {{environment.cryptodir}}/peerOrganizations/{{organizations[1].name}}.example.com/peers/peer5.{{organizations[1].name}}.example.com/msp/tlscacerts/tlsca.{{organizations[1].name}}.example.com-cert.pem
+
+
+# Fabric-CA is a special kind of Certificate Authority provided by Hyperledger Fabric which allows
+# certificate management to be done via REST APIs. Application may choose to use a standard
+# Certificate Authority instead of Fabric-CA, in which case this section would not be specified.
+#
+certificateAuthorities:
+  ca{{organizations[0].name}}:
+    url: https://localhost:7054
+    # the properties specified under this object are passed to the 'http' client verbatim when
+    # making the request to the Fabric-CA server
+    httpOptions:
+      verify: false
+
+    tlsCACerts:
+      path: {{environment.cryptodir}}/peerOrganizations/{{organizations[0].name}}.example.com/ca/ca.{{organizations[0].name}}.example.com-cert.pem
+
+    # Fabric-CA supports dynamic user enrollment via REST APIs. A "root" user, a.k.a registrar, is
+    # needed to enroll and invoke new users.
+    registrar:
+        enrollId: admin
+        enrollSecret: adminpw
+    # [Optional] The optional name of the CA.
+    caName: ca{{organizations[0].name}}
+
+  ca{{organizations[1].name}}:
+    url: https://localhost:8054
+    tlsCACerts:
+      path: {{environment.cryptodir}}/peerOrganizations/{{organizations[1].name}}.example.com/ca/ca.{{organizations[1].name}}.example.com-cert.pem
+
+    httpOptions:
+      verify: false
+    registrar:
+        enrollId: admin
+        enrollSecret: adminpw
+    caName: ca{{organizations[1].name}}

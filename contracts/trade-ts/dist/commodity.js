@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fabric_contract_api_1 = require("fabric-contract-api");
 let Commodity = class Commodity {
     constructor(obj) {
-        Object.assign(this, obj);
+        fabric_contract_api_1.Object.assign(this, obj);
     }
     static getType() {
         return 'Commodity';
@@ -54,7 +54,7 @@ __decorate([
     __metadata("design:type", String)
 ], Commodity.prototype, "owner", void 0);
 Commodity = __decorate([
-    fabric_contract_api_1.Asset(),
-    __metadata("design:paramtypes", [Object])
+    fabric_contract_api_1.Object(),
+    __metadata("design:paramtypes", [Commodity])
 ], Commodity);
 exports.default = Commodity;

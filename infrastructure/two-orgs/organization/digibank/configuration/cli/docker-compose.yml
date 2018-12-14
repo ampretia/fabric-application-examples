@@ -1,0 +1,39 @@
+#
+# Copyright IBM Corp All Rights Reserved
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+version: '2'
+
+networks:
+  commercialpaper-net:
+    external:
+      name: commercialpaper-net  
+
+services:
+  cliDigiBank:
+    container_name: cliDigiBank
+    image: hyperledger/fabric-tools
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=info
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=peer5.digibank.example.com:8051
+      - CORE_PEER_LOCALMSPID=digibankMSP
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/digibank.example.com/users/Admin@digibank.example.com/msp
+      - CORE_CHAINCODE_KEEPALIVE=10
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/digibank.example.com/peers/peer5.digibank.example.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/digibank.example.com/peers/peer5.digibank.example.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/digibank.example.com/peers/peer5.digibank.example.com/tls/ca.crt      
+      - ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/magnetocorp.example.com/orderers/orderer1.magnetocorp.example.com/msp/tlscacerts/tlsca.magnetocorp.example.com-cert.pem
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./../../../../organization/digibank:/opt/gopath/src/github.com/
+        - ./../../../../commercial-paper-network/crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+    networks:
+        - commercialpaper-net

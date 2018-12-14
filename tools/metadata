@@ -1,0 +1,41 @@
+#!/bin/bash 
+orderer=orderer.example.com:7050
+channel=mychannel
+network=mynetwork
+
+while getopts "o:n:c:h" opt; do
+  case ${opt} in
+    o )
+      orderer=$OPTARG
+      ;;
+    n )
+      network=$OPTARG
+      ;;      
+    c )
+      channel=$OPTARG
+      ;;   
+    h )
+      echo "Usage:  metadata   [-h] [-o args] [-c args] [-n args]"  
+      echo "    -h                     Display this help message"
+      echo "    -o <ordererip>:<port>  Orderer ip and port"
+      echo "    -c <name>              Channel name"                     
+      echo "    -n <name>              Network (chaincode) name" 
+      exit 0      
+    \? )
+      echo "Invalid option: $OPTARG" 1>&2
+      ;;
+  esac
+done
+shift $((OPTIND -1))
+
+echo Orderer: ${orderer} 
+echo Channel: ${channel} 
+echo Network: ${network}
+
+tmp=${TMPDIR:-/tmp}/mine.$$
+docker exec cli peer chaincode invoke --orderer "${orderer}" --channelID "${channel}" -c '{"Args":["org.hyperledger.fabric:GetMetadata"]}' -n "${network}" 2>&1 1> $tmp.1
+if [ $? -eq 0 ]; then
+   gawk -e 'match($0, /payload:(.*)$/, a) {print a[1]}' $tmp.1 | jq 'fromjson'    
+fi
+
+rm $tmp.1

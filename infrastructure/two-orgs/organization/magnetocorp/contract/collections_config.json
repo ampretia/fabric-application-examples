@@ -1,0 +1,18 @@
+[
+    {
+      "name": "collectionPaper",
+      "policy": "OR('digibankMSP.member', 'magnetocorpMSP.member')",
+      "requiredPeerCount": 0,
+      "maxPeerCount": 3,
+      "blockToLive":1000000,
+      "memberOnlyRead": true
+   },
+    {
+      "name": "collectionPaperPrivateDetails",
+      "policy": "OR('digibankMSP.member')",
+      "requiredPeerCount": 0,
+      "maxPeerCount": 3,
+      "blockToLive":3,
+      "memberOnlyRead": true
+    }
+   ]

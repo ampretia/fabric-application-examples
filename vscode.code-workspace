@@ -4,7 +4,19 @@
 			"path": "."
 		},
 		{
-			"path": "contracts/helloworld-ts"
+			"path": "/home/matthew/github.ibm/generator"
+		},
+		{
+			"path": "/home/matthew/ubuntu-setup"
+		},
+		{
+			"path": "/home/matthew/dev-expr"
+		},
+		{
+			"path": "/home/matthew/dev-expr/my-fabric-examples/contract"
+		},
+		{
+			"path": "contracts/logging-example"
 		}
 	],
 	"settings": {

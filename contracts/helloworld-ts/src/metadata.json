@@ -1,86 +1,150 @@
 {
-    "info": {
-      "title": "custom-serializer",
-      "version": "0.0.1"
-    },
-    "contracts": [
-      {
-        "info": {
-          "title": "",
-          "version": "0.0.1"
-        },
-        "transactions": [
-          {
-            "tag": [
-              "submitTx"
-            ],
-            "parameters": [],
-            "name": "instantiate"
-          },
-          {
-            "tag": [
-              "submitTx"
-            ],
-            "parameters": [
-              {
-                "name": "text",
-                "description": "",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            ],
-            "name": "setGreetingText"
-          },
-          {
-            "return": [
+    "$schema": "https://fabric-shim.github.io/release-1.4/contract-schema.json",
+    "contracts": {
+        "Greeting": {
+            "name": "Greeting",
+            "contractInstance": {
+                "name": "Greeting",
+                "default": true
+            },
+            "transactions": [
                 {
-                    "name": "greeting",
-                    "description": "Greeting Object",
-                    "required": true,
-                    "schema": {
-                        "$ref": "#/components/schemas/greeting"
-                    }
+                    "tag": [
+                        "submitTx"
+                    ],
+                    "parameters": [],
+                    "name": "instantiate"
+                },
+                {
+                    "tag": [
+                        "submitTx"
+                    ],
+                    "parameters": [
+                        {
+                            "name": "text",
+                            "description": "",
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    ],
+                    "name": "setGreetingText"
+                },
+                {
+                    "tag": [
+                        "submitTx"
+                    ],
+                    "parameters": [
+                        {
+                            "name": "greeting",
+                            "description": "",
+                            "schema": {
+                                "$ref": "#/components/schemas/Greeting"
+                            }
+                        }
+                    ],
+                    "name": "setGreeting"
+                },
+                {
+                    "returns": [
+                        {
+                            "name": "success",
+                            "schema": {
+                                "$ref": "#/components/schemas/Greeting"
+                            }
+                        }
+                    ],
+                    "name": "getGreeting",
+                    "tag": [
+                        "submitTx"
+                    ],
+                    "parameters": []
+                },
+                {
+                    "returns": [
+                        {
+                            "name": "success",
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    ],
+                    "name": "getGreetingText",
+                    "tag": [
+                        "submitTx"
+                    ],
+                    "parameters": []
+                },
+                {
+                    "returns": [
+                        {
+                            "name": "success",
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    ],
+                    "name": "paragraph",
+                    "tag": [
+                        "submitTx"
+                    ],
+                    "parameters": []
                 }
             ],
-            "name": "getGreeting",
-            "tag": [
-              "submitTx"
-            ],
-            "parameters": []
-          }
-        ],
-        "namespace": ""
-      },
-      {
-        "info": {
-          "title": "org.hyperledger.fabric",
-          "version": "0.0.1"
+            "info": {
+                "title": "",
+                "name": "GreetingContract",
+                "description": "The description",
+                "version": ""
+            }
         },
-        "transactions": [
-          {
-            "transactionId": "GetMetadata"
-          }
-        ],
-        "namespace": "org.hyperledger.fabric"
-      }
-    ],
+        "org.hyperledger.fabric": {
+            "name": "org.hyperledger.fabric",
+            "contractInstance": {
+                "name": "org.hyperledger.fabric"
+            },
+            "transactions": [
+                {
+                    "name": "GetMetadata"
+                }
+            ],
+            "info": {
+                "title": "",
+                "version": ""
+            }
+        }
+    },
+    "info": {
+        "version": "0.0.1",
+        "title": "helloworld-ts"
+    },
     "components": {
         "schemas": {
-            "paper": {
-                "name": "greeting",
-                "required": [
-                    "text"
-                ],
+            "Greeting": {
+                "$id": "Greeting",
+                "type": "object",
+                "additionalProperties": false,
                 "properties": [
                     {
                         "name": "text",
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "name": "textLength",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "wordCount",
+                        "schema": {
+                            "type": "number"
+                        }
                     }
                 ]
             }
         }
     }
-  }
+}

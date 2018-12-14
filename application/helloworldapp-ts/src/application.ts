@@ -77,8 +77,8 @@ async function main() {
         const userName = process.env.USERNAME  || 'fred';
         await greetingAPI.setGreetingText(`Hello World ${userName}!!`);
 
-        const text2 = await greetingAPI.getGreetingText();
-        console.log(`\n>> The greeting is '${text2}'`);
+        const text3 = await greetingAPI.paragraph();
+        console.log(`\n ${text3}`)
 
     } catch (error) {
         console.log(`Error processing transaction. ${error}`);

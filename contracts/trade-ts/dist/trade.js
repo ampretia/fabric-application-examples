@@ -31,15 +31,6 @@ class TradeContract extends fabric_contract_api_1.Contract {
     createContext() {
         return new tradeContext_1.default();
     }
-    /**
-     * Instantiate to perform any setup of the ledger that might be required.
-     * @param {Context} ctx the transaction context
-     */
-    async instantiate(ctx) {
-        // no implementation required with this example
-        // this could be where datamigration is required
-        console.log('Instantiate the contract');
-    }
     async addCommodity(ctx, commodity) {
         console.log(commodity);
         // const commodity = new Commodity(JSON.parse(commodityJSON));
@@ -63,12 +54,6 @@ class TradeContract extends fabric_contract_api_1.Contract {
         return commodity;
     }
 }
-__decorate([
-    fabric_contract_api_1.Transaction(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], TradeContract.prototype, "instantiate", null);
 __decorate([
     fabric_contract_api_1.Transaction(),
     __metadata("design:type", Function),
