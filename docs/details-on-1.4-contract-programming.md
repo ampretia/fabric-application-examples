@@ -72,11 +72,43 @@ Each transaction must take as it's first parameter the transaction context
 
 ### Context
 
-...
+The first parameter is the 'transaction context' - it is quite plausable for several transactions to being invoked concurrently; and the tranaction context is required to give information specific to the transaction that is currently being executed. 
+
+Currently the 'stub' api for handling world state, and the 'Client Identitiy' is available from the context.
+Each contract has a 'createContext' method that can be overriden by specific implementations to provide specific control to add information to the 
+
 
 ### Before, After and Unknown Functions
 
-...
+The Contract class defines three functions that can be overridden by specific implementations.
+
+```javascript
+    async beforeTransaction(ctx) {
+    // default implementation is do nothing
+    }
+
+    async afterTransaction(ctx, result) {
+        // default implementation is do nothing
+    }
+```
+
+Before is called immediately before the transaction function, and after immediately afterwards. Note that before does not get the arguments to the function (note this was the subject of debate, opinions welcomed). After gets the result from the transaction function (this is the result returned from transaction function without any processing). 
+
+If the transaction function throws an Error then the whole transaction fails, likewise if the before or after throws an Error then the transaction fails. (note that if say before throws an error the transaction function is never called, nor the after. Similarly if transaction function throws an Error, after is not called. )
+
+The unknown function is called if the requested function is not known; the default implementation is throw an error. `You've asked to invoke a function that does not exist: {requested function}` 
+
+Typical usecases of these functions would be
+
+- logging of the functions called
+- checks of the identity of the caller
+
+
+```javascript
+    async unknownTransaction(ctx) {
+        // throws an error 
+    }
+```
 
 ## Metadata
 
@@ -99,3 +131,4 @@ A correctly specific metadata file, at the top level has this structure
 ```
 
 The metadata file that the user specifies has precedence over the information generated from the code, on a per section basis. If the user has not specified any of the above sections, then the 'gap' will be filled with auto generated values. 
+

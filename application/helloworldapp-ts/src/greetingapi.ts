@@ -18,6 +18,7 @@ import { Contract, Network } from 'fabric-network';
  */
 
 export default class GreetingAPI {
+public String;
 
     private contractName = 'Greeting';
 
@@ -31,10 +32,12 @@ export default class GreetingAPI {
     public async init(chaincodeId: string) {
         this.contract = await this.network.getContract(chaincodeId, this.contractName);
     }
-
-    public async setGreeting(greeting): Promise<void> {
+    public async setGreeting(greeting): Promise<string> {
         const setGreeting = await this.contract.createTransaction('setGreeting');
-        await setGreeting.submit(JSON.stringify(greeting));
+        const result = await setGreeting.submit(JSON.stringify(greeting));
+
+        console.log(result.toString());
+        return result.toString();
     }
 
     public async setGreetingText(greetingText): Promise<void>  {
