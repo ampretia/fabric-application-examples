@@ -1,6 +1,6 @@
-import { Asset, Property } from 'fabric-contract-api';
+import { Object, Property } from 'fabric-contract-api';
 
-@Asset()
+@Object()
 export default class Commodity {
 
     public static getType() {
@@ -22,8 +22,8 @@ export default class Commodity {
     @Property()
     public owner: string;
 
-    constructor(obj) {
-        Object.assign(this, obj);
+    constructor(obj:Commodity) {
+        (<any>Object).assign(this, obj);
     }
 
     public getTradeId() {

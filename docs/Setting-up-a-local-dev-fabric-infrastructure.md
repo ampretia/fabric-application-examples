@@ -3,11 +3,18 @@
 This tutorial downloading and creating Hyperledger Fabric instance, configuring the Hyperledger Fabric instance for development mode.
 
 ## Downloading Hyperledger Fabric 1.3.0
-You'll need to download the latest Hyperledger Fabric docker images; the current release is 1.3.0.
+You'll need to download the latest Hyperledger Fabric docker images, and also it is helpful to have the `fabric-samples` repository.
 
-Create a working directory where you can store some setup scripts, and also where you can clone the the fabric-samples repository. A simple development infrastructure is defined in here. 
+Create a working directory where you can store some setup scripts, and where the samples directory will be.
 
-1. To download an instance of Hyperledger Fabric 1.3.0, navigate to the `infrastructure` directory of the GitHub repository cloned in the preceding step.
+
+1. Create a working directoy - location and name at your discretion of course; 
+
+```bash
+mkdir -p ~/dev-expr
+cd ~/dev-expr
+```
+
 2. Run these commands to get the Hyperledger Fabric 1.3.0 bootstrap script
 
 ```bash
@@ -18,7 +25,7 @@ chmod +x bootstrap.sh
 4. Run the bootstrap.sh script to get the docker containers needed
 
 ```bash
-./bootstrap.sh -b      
+./bootstrap.sh 1.4.0-rc1   
 ```
 
 ## Enabling development mode
@@ -81,7 +88,7 @@ The following script uses a utility called `logspout` to be able to capture all 
 # More information at https://github.com/gliderlabs/logspout/tree/master/httpstream
 
 if [ -z "$1" ]; then
-   DOCKER_NETWORK=basicnetwork_basic
+   DOCKER_NETWORK=net_basic
 else 
    DOCKER_NETWORK="$1"
 fi
@@ -100,3 +107,6 @@ sleep 3
 curl http://127.0.0.1:8000/logs
 ```
 
+## Next steps
+
+- [Basic introduction to contract programming](./Into-to-1.4-contract-programming.md)

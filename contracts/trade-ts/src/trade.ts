@@ -13,7 +13,7 @@ import TradeContext from './tradeContext';
  * Define commercial paper smart contract by extending Fabric Contract class
  *
  */
-export  class TradeContract extends Contract {
+export class TradeContract extends Contract {
 
     constructor() {
         // Unique namespace when multiple contracts per chaincode file
@@ -25,17 +25,6 @@ export  class TradeContract extends Contract {
      */
     public createContext() {
         return new TradeContext();
-    }
-
-    /**
-     * Instantiate to perform any setup of the ledger that might be required.
-     * @param {Context} ctx the transaction context
-     */
-    @Transaction()
-    public async instantiate(ctx) {
-        // no implementation required with this example
-        // this could be where datamigration is required
-        console.log('Instantiate the contract');
     }
 
     @Transaction()

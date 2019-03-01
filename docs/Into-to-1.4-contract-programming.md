@@ -2,32 +2,26 @@
 
 ## Introduction
 
-Many years ago when I was learning the craft of programming the phrases High Level and Low Level programming languages were heard a lot more frequently than today. Frequently your chosen programming approach couldn't provide the features you needed and you had to 'drop down' to a low level. 
+Many years ago when I was learning the craft of programming the phrases 'High Level' and 'Low Level' programming languages were heard more frequently than today. There were times when your chosen programming approach couldn't provide the features you needed and you had to 'drop down' to a low level. Be this a direct call to an operating system function or in extreme cases I recall using assembly. Though I was to learn the formal definition of the word abstraction a later, the concept of different levels of abstraction was already well known to me. 
 
-Though I was to learn the formal definition of the word abstraction a latter the concept of different levels of abstraction was already well known to me. 
+We might not hear the phrases high and low level as often, but the concepts are still very much present. For example in the web development world jQuery provides a high level of abstraction across different browsers, and let developers write more about the general concept of the DOM and lets browser specific differences be hidden
 
-We might not hear the phrases much any more - but the concepts are still very much present. Perhaps in the web development world jQuery provided a high level of abstraction across different browsers, and let developers write more about the general concept of the DOM.
+You may have heard of something called Blockchain and Smart Contracts; Hyperledger Fabric provides a permissioned ledger that supports Smart Contracts using general purposes languages and environments (NodeJS , Go, Java). 
 
-You may have heard of something called Blockchain - and Smart Contracts; Hyperledger Fabric provides a permissioned ledger that supports Smart Contracts using general purposes languages  (NodeJS, Go, Java).  
+### Terminology level set
 
-What is available - in the current development stream so you have chance to help shape it - is a high level of abstraction to help develop smart contracts.
+The 'elevator pitch' on how chaincode or smart contracts works is as like this. 
 
-## All new?
-Well maybe not *all* new; we're building upon, not destroying the foundations laid by the existing concepts in Hyperledger Fabric - and bring the experience of Hyperledger Composer to aim high.
+Imagine starting with a set of key-value pairs. The value can be any data - and the key is a string; this is set is stored within a store - the "world state". A function can be run that reads this state and can propose changes to it. Create new key-value pairs, update values, or remove values. This proposal, together with details of the function, parameters, return values, and entity invoking it form up a transaction. This transaction, subject to the blockchain model of consensus and ordering can be persisted on the ledger. 
 
->All available in the master branch - feedback will help shape the future!
+The way in which a developer will write code to create these functions, and invoke them is the 'Programming Model' as mentioned in the title.
+*All new* programming model? Well not *all* new; we're building upon, not destroying the foundations laid by the existing concepts in Hyperledger Fabric.
 
-## Chaincode, Smart Contracts, and SDKs
+## Quick recap on the foundations
 
-As with many systems - you'll have some code is running 'server side', 'in the cloud' etc. And some code that is acting as a trigger, a local application, an API etc.
+Working with NodeJs,today a Hyperledger Fabric chaincode is written with a class implementing two methods `init` and `invoke`.  
 
-The 'server side' piece of the code 
-
-## Quick recap
-
-Working with NodeJs,today a Hyperledger Fabric chaincode (Smart Contract) is written to implement two methods `init` and `invoke`.  
-
-Lifecycle of the chaincode container is that you 'install' the chaincode, you then 'instantiate' it at which point a docker image is created with your code inside, this is then started. (and the `init` function is called)
+The lifecycle of the chaincode container is that you 'install' the chaincode, you then 'instantiate' it at which point a docker image is created with your code inside, this is then started and within this container, the `init` function is called.
 
 Applications can then call functions with data (called submitting a transaction) - the `invoke` function being called with the data. 
 Chaincode can be updated with new code, at which point the process is similar. The code is installed, and `updgrade` command is issued, and the `init` function is again called should any data migration need to occur.  
@@ -40,29 +34,28 @@ The difference between the world state before and after the transaction forms a 
 
 What we found was that people invariably had various named functions in the Smart Contracts; say 'issue' 'buy' 'redeem'. As all of these are routed via a single `invoke` function invariably some additional logic had to be written to separate out say the 'issue' from the 'buy'.
 
-This is repeated over and over again, plus with a general array of arguments, any concept of type safety is lost. 
-
-We now have a high-level of abstraction that does a lot of the common work for you. 
+This is repeated over and over again, plus with a general array of arguments as strings, any concept of type safety is lost. A high-level abstraction is now available to make developing the code easier - more focusing on the logic and not the routing. This  abstraction has permitted a the definition of a 'meta-data' format that does for Chaincode what OpenApi/Swagger does for REST apis. 
 
 ## Smart Contract - 'hello world'
 
-Let's consider the classic Hello World, but in a Smart Contract; not a great blockchain use-case but the point here is to showcase the API and structure you need.
-Create a working directory, and within that a directory for the smart contract
+Let's consider the classic Hello World, but in a Smart Contract; not a great blockchain use-case but the point here is to showcase the API and structure you need. The steps below will create a working directory and scaffold into that a basic contract that we can build upon.
 
 ### Creating the code
 
-```
-$ mkdir my-fabric-examples
-$ mkdir my-fabric-examples/contract
+- Again using the `~/dev-expr` as the root directory, create directory tree to hold the contract source code
+
+```bash
+mkdir -p ~/dev-expr/my-fabric-examples/contract
+cd !$
 ```
 
-Install the Yeoman tool, and the generator for fabric.
+- A prebuilt templated driven project is available. Install the Yeoman tool, and the generator for Fabric.
 
-```
-$ npm install -g yo generator-fabric
+```bash
+npm install -g yo generator-fabric
 ```
 
-.. change into the contract directory and then run the Fabric Contract generator.  This will ask a number of questions.
+- By running the Yeoman generator, a basic project can be created. This is the transcript of questions and answers
 
 ```
 $ yo                                                                                                        
@@ -74,7 +67,7 @@ This generator can also be run with: yo fabric
 ? Please specify the generator to run: Contract
 This generator can also be run with: yo fabric:contract
 ? Please specify the contract language: TypeScript
-? Please specify the contract name: helloworld-ts
+? Please specify the contract name: greetingContract-ts
 ? Please specify the contract version: 0.0.1
 ? Please specify the contract description: Hello World
 ? Please specify the contract author: 
@@ -94,7 +87,7 @@ I'm all done. Running npm install for you to install the required dependencies. 
 
 ```
 
-Once installed, using your favourite editor, look into the my-contract.ts file. 
+- Once installed, using your favourite editor, look into the my-contract.ts file. 
 
 ```typescript
 import { Context, Contract } from 'fabric-contract-api';
@@ -124,7 +117,8 @@ For this example, we'll do the following changes
 - instantiate will be modified to set a default greeting
 
 ```typescript
-    public async instantiate(ctx: Context): Promise<any> {
+
+    public async instantiate(ctx: Context): Promise<void> {
         let greeting = { text: 'Hi' };
         await ctx.stub.putState('GREETING', Buffer.from(JSON.stringify(greeting)));
     }
@@ -134,6 +128,7 @@ We're using the `ctx.stub` to access the API, and `putState` updates the state k
 
 The `setGreeting` function is 
 ```typescript
+
     public async setGreeting(ctx: Context, greeting: string): Promise<any> {
         await ctx.stub.putState('GREETING', Buffer.from(JSON.stringify(greeting)));
         console.info(`setGreeting to ${greeting['text']}`);
@@ -145,6 +140,7 @@ Very similar in structure to the instantiate but the data is coming from the arg
 Finally `getGreeting` is probably not surprising; we're returning the buffer directory
 
 ```typescript
+
     public async getGreeting(ctx: Context): Promise<any> {
         let buffer = await ctx.stub.getState('GREETING');
         let greeting = JSON.parse(buffer.toString());       // the prasing of the buffer is to output only
@@ -198,3 +194,161 @@ The set greeting function :
     });
 ```
 
+# Using from the command line.
+
+1. Start the Fabric infrastructure but in development mode. This will in a previous tutorial
+2. Build the contract
+```bash
+npm run build
+```
+
+3. Now need to start the contract in dev mode, 
+Add this line to the scripts section of the package.json
+```json
+        "start:dev": "CORE_CHAINCODE_LOGGING_SHIM=debug fabric-chaincode-node start --peer.address=localhost:7052 --chaincode-id-name hellonet:1",
+```
+
+4. When in dev mode, you are taking on the responsibility to start/stop the 'chaincode container' There isn't a container as such; rather a node.js application running from the command line.  This lets output come to the terminal directly and also makes the whole chaincode lifecycle a lot faster
+
+5. You still need to issue the install and instantiate commands. Typically these can be done via a docker cli container (based on fabric-tools).
+
+From the `~/dev-expr/my-fabric-examples` directory, create a new `docker-compose.yml` file with the following contents
+```yaml
+version: '2'
+
+networks:
+  basic:
+    external:
+      name: net_basic
+
+services:
+  fabriccli:
+    container_name: cli
+    image: hyperledger/fabric-tools
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_LOGGING_LEVEL=info
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+      - CORE_CHAINCODE_KEEPALIVE=10
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./:/opt/gopath/src/github.com/
+        - ./../fabric-samples/basic-network/crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+    networks:
+        - basic
+```
+
+Then start this up so that there is a connected CLI to the Fabric infrastructure that is running
+
+```bash
+cd ~/dev-expr/my-fabric-examples
+docker-composer up -d
+```
+
+### Installing and Instantiating the contract
+
+- First step is to install the contract - in dev mode this has little purpose, but is required so fabric has the correct internal state.
+```bash
+docker exec cli peer chaincode install -n hellonet -v 1 -p /opt/gopath/src/github.com/contract -l node 
+```
+
+- Instantiate is required - this would normally trigger the chaincode container to be created, and the instantiate transaction called. With dev mode, just the instantiate transaction is called. 
+
+```bash
+docker exec cli peer chaincode instantiate -n hellonet -v 1 -l node -c '{"Args":["instantiate"]}' -C mychannel
+```
+
+### Issuing transactions
+
+To summarise what has been achieved so far, Fabric is installed and started. We've created a simple contract, and started that in dev mode. We've done the required administration to *install and instantiate* the contact. We can now invoke the transacitons.
+
+- We'll call the `getGreeting` transaction first to get the default.
+```bash
+docker exec cli peer chaincode invoke --orderer orderer.example.com:7050 --channelID mychannel -c '{"Args":["getGreeting"]}' -n hellonet
+2018-12-17 15:02:43.333 UTC [main] InitCmd -> WARN 001 CORE_LOGGING_LEVEL is no longer supported, please use the FABRIC_LOGGING_SPEC environment variable
+2018-12-17 15:02:43.350 UTC [main] SetOrdererEnv -> WARN 002 CORE_LOGGING_LEVEL is no longer supported, please use the FABRIC_LOGGING_SPEC environment variable
+2018-12-17 15:02:43.400 UTC [chaincodeCmd] chaincodeInvokeOrQuery -> INFO 003 Chaincode invoke successful. result: status:200 payload:"{\"text\":\"Hi\"}"
+```
+- Now we can update the arguments to change the text to 'Hello from Fabric'
+
+```bash
+docker exec cli peer chaincode invoke --orderer orderer.example.com:7050 --channelID mychannel -c '{"Args":["setGreeting","Hello from Fabric"]}' -n hellonet
+2018-12-17 15:03:16.116 UTC [main] InitCmd -> WARN 001 CORE_LOGGING_LEVEL is no longer supported, please use the FABRIC_LOGGING_SPEC environment variable
+2018-12-17 15:03:16.135 UTC [main] SetOrdererEnv -> WARN 002 CORE_LOGGING_LEVEL is no longer supported, please use the FABRIC_LOGGING_SPEC environment variable
+2018-12-17 15:03:16.158 UTC [chaincodeCmd] chaincodeInvokeOrQuery -> INFO 003 Chaincode invoke successful. result: status:200
+```
+
+- Reissue the get to check the value has come back. 
+```bash
+docker exec cli peer chaincode invoke --orderer orderer.example.com:7050 --channelID mychannel -c '{"Args":["getGreeting"]}' -n hellonet
+2018-12-17 15:03:20.921 UTC [main] InitCmd -> WARN 001 CORE_LOGGING_LEVEL is no longer supported, please use the FABRIC_LOGGING_SPEC environment variable
+2018-12-17 15:03:20.937 UTC [main] SetOrdererEnv -> WARN 002 CORE_LOGGING_LEVEL is no longer supported, please use the FABRIC_LOGGING_SPEC environment variable
+2018-12-17 15:03:20.980 UTC [chaincodeCmd] chaincodeInvokeOrQuery -> INFO 003 Chaincode invoke successful. result: status:200 payload:"\"Hello from Fabric\"" 
+```
+
+### Metadata
+
+One of the new features of the 1.4.0 programming model is the metadata that is available from the chaincode container. This describes what transaction functions are available
+
+This is obtained by invoking a transction, but on a different function. Here we're also using `gawk` and `jq` to format the output. You may need to install these two tools; otherwise remove the end of the command from 2>&1 to the ends
+
+```bash
+docker exec cli peer chaincode invoke --orderer orderer.example.com:7050 --channelID mychannel -c '{"Args":["org.hyperledger.fabric:GetMetadata"]}' -n hellonet 2>&1 | gawk -e 'match($0, /payload:(.*)$/, a) {print a[1]}' | jq 'fromjson'
+{
+  "contracts": {
+    "MyContract": {
+      "name": "MyContract",
+      "contractInstance": {
+        "name": "MyContract",
+        "default": true
+      },
+      "transactions": [
+        {
+          "name": "instantiate"
+        },
+        {
+          "name": "setGreeting"
+        },
+        {
+          "name": "getGreeting"
+        }
+      ],
+      "info": {
+        "title": "",
+        "version": ""
+      }
+    },
+    "org.hyperledger.fabric": {
+      "name": "org.hyperledger.fabric",
+      "contractInstance": {
+        "name": "org.hyperledger.fabric"
+      },
+      "transactions": [
+        {
+          "name": "GetMetadata"
+        }
+      ],
+      "info": {
+        "title": "",
+        "version": ""
+      }
+    }
+  },
+  "info": {
+    "version": "0.0.1",
+    "title": "greetingContract-ts"
+  },
+  "components": {
+    "schemas": {}
+  }
+}
+```
+
+The data that is available initially is basic, but it has a lot more power, with a few simple changes.

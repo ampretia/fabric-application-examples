@@ -1,0 +1,189 @@
+#!/usr/bin/env node
+
+'use strict';
+const path = require('path');
+const fs = require('fs');
+const chalk = require('chalk');
+const homedir = require('homedir');
+const yaml = require('js-yaml');
+const yargs = require('yargs');
+const mkdirp = require('mkdirp');
+const inquirer = require('inquirer');
+
+const log = {
+    info: (...args) => {
+        console.log(chalk.green(args));
+    },
+    warn: (...args) => {
+        console.log(chalk.red(args));
+    },
+    out: (...args) => {
+        console.log(args);
+    }
+};
+
+
+// Options for the command line args; all but the reset are cached
+const options = {
+    walletpath: {
+        alias: 'w',
+        demandOption: false,
+        default: './wallet',
+        describe: 'Path to the local filesystem wallet',
+        type: 'string',
+        nargs: 1
+    },
+    identitylabel:
+    {
+        alias: 'i',
+        demandOption: false,
+        default: 'User1@org1.example.com',
+        describe: 'Identity label for the connection',
+        type: 'string',
+        nargs: 1
+    },
+    tlsidentitylabel: {
+        alias: 't',
+        demandOption: false,
+        default: 'User1@org1.example.com',
+        describe: 'Identity label for tls connection',
+        type: 'string',
+        nargs: 1
+    },
+    connectionprofile: {
+        alias: 'p',
+        demandOption: false,
+        default: './networkconnection.json',
+        describe: 'Connection Profile file path (json or yaml format)',
+        type: 'string',
+        nargs: 1
+    },
+    channel: {
+        alias: 'c',
+        demandOption: false,
+        default: 'mychannel',
+        describe: 'Channel name',
+        type: 'string',
+        nargs: 1
+    },
+    chaincodename: {
+        alias: 'n',
+        demandOption: false,
+        default: 'mycontract',
+        describe: 'Chaincode name',
+        type: 'string',
+        nargs: 1
+    },
+    reset: {
+        demandOption: false,
+        describe: 'Ignore cached values and ask for new values',
+        type: 'boolean'
+    }
+};
+
+// get the command line options
+const cmdLineConfig = () => {
+
+    return yargs
+        .usage('Usage: $0 <command> [options]')
+        .options(options)
+        .example('$0 metadata -n fabcar', 'Get the metadata for the fabcar chaincode')
+        .help('h')
+        .alias('h', 'help')
+        .argv;
+
+};
+
+// managed the caching of the options
+const getconfig = async () => {
+    let cfgPath = path.resolve(homedir(), '.fabric-devtools');
+    if (!fs.existsSync(cfgPath)) {
+        mkdirp.sync(cfgPath);
+    }
+
+    let cfgFile = path.join(cfgPath, 'config.json');
+    let config = {};
+
+    if (fs.existsSync(cfgFile)) {
+        config = JSON.parse(fs.readFileSync(cfgFile));
+    }
+
+    // get cmd line options and merge to those loaded
+    let cmdConfig = cmdLineConfig();
+
+    console.log(cmdConfig);
+    if (cmdConfig.reset) {
+        config = {};
+        delete cmdConfig.reset;
+        delete options.reset;
+    }
+    // this property isn't copied across.. as it's an array.
+    config.command = cmdConfig._[0];
+    Object.assign(config, cmdLineConfig);
+    let questions = [];
+
+    Object.keys(options).forEach(key => {
+        if (!(key in config)) {
+            q = options[key];
+            q.name = key;
+            q.type = 'input';
+            q.message = `What is the ${q.describe} ?`;
+            questions.push(options[key]);
+        }
+    });
+
+    let answers = await inquirer.prompt(questions);
+
+    // check for any missing
+    // and run inquirer
+    Object.assign(config, answers);
+
+    // write back
+    fs.writeFileSync(cfgFile, JSON.stringify(config));
+
+    return config;
+};
+
+
+// main functions
+async function main () {
+    let cfg = await getconfig();
+
+    let cmdFile = path.resolve(__dirname, `${cfg.command}.js`);
+    log.info(`Invoking "${cfg.command}"  ${cfg} `);
+    if (fs.existsSync(cmdFile)) {
+        let format = path.extname(cfg.connectionprofile);
+        switch (format) {
+        case '.json':
+            cfg.ccp = JSON.parse(fs.readFileSync(cfg.connectionprofile));
+            break;
+        case '.yaml':
+        case '.yml':
+            cfg.ccp = yaml.safeLoad(fs.readFileSync(cfg.connectionprofile, 'utf8'));
+            break;
+        default:
+            log.warn('Unkown format of file');
+            process.exit(-1);
+            break;
+        }
+
+        require(cmdFile)(cfg);
+    } else {
+        log.warn('Command does not exist');
+        process.exit(-1);
+    }
+}
+
+// kick off the logic
+main().then(() => {
+
+}).catch((e) => {
+    log.warn(e);
+    process.exit(-1);
+});
+
+
+
+
+
+

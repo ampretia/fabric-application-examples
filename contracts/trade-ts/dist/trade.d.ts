@@ -11,11 +11,6 @@ export declare class TradeContract extends Contract {
      * A custom context provides easy access to list of all trades
      */
     createContext(): TradeContext;
-    /**
-     * Instantiate to perform any setup of the ledger that might be required.
-     * @param {Context} ctx the transaction context
-     */
-    instantiate(ctx: any): Promise<void>;
     addCommodity(ctx: any, commodity: Commodity): Promise<void>;
     /**
      * Track the trade of a commodity from one trader to another

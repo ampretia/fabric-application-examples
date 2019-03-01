@@ -44,7 +44,7 @@
   },
   "orderers": {
     "orderer.example.com": {
-      "url": "grpc://localhost:7050",
+      "url": "grpc://orderer.example.com:7050",
       "grpcOptions": {
         "ssl-target-name-override": "orderer.example.com"
       }
@@ -52,7 +52,7 @@
   },
   "peers": {
     "peer0.org1.example.com": {
-      "url": "grpc://localhost:7051",
+      "url": "grpc://peer0.org1.example.com:7051",
       "grpcOptions": {
         "ssl-target-name-override": "peer0.org1.example.com",
         "request-timeout": 120001
@@ -61,7 +61,7 @@
   },
   "certificateAuthorities": {
     "ca-org1": {
-      "url": "http://localhost:7054",
+      "url": "http://ca-org1:7054",
       "httpOptions": {
         "verify": false
       },

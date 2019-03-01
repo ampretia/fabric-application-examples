@@ -22,8 +22,8 @@
     "author": "",
     "license": "",
     "dependencies": {
-        "fabric-contract-api": "file:fabric-contract-api-1.4.0-beta2.tgz",
-        "fabric-shim": "file:fabric-shim-1.4.0-beta2.tgz"
+        "fabric-contract-api": "^1.4.0",
+        "fabric-shim": "^1.4.0"
     },
     "devDependencies": {
         "@types/chai": "^4.1.4",

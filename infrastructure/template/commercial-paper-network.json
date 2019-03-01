@@ -1,0 +1,17 @@
+{
+    "environment":{
+        "cryptodir":"/home/matthew/github.com/ampretia/fabric-application-examples/infrastructure/two-orgs/commercial-paper-network/crypto-config"
+    },
+    "network":{
+        "name":"commercial-paper-network",
+        "description":"The Commercial Paper network"
+    },
+    "organizations":[
+       {
+           "name":"magnetocorp"
+       },
+       { 
+           "name":"digibank"
+       }
+   ]
+}

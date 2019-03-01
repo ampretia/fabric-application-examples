@@ -37,10 +37,12 @@ export class GreetingContract extends Contract {
     public async instantiate(ctx: GreetingContext): Promise<any> {
         const greeting = { text: 'Hi' };
         await ctx.stub.putState('GREETING', Buffer.from(JSON.stringify(greeting)));
+
         console.info('Set the default greeting');
     }
 
     @Transaction()
+    @Returns('Greeting')
     public async setGreetingText(ctx: GreetingContext, text: string): Promise<Greeting> {
         console.info('setGreetingText');
         const greeting: Greeting = new Greeting(text);
@@ -49,7 +51,6 @@ export class GreetingContract extends Contract {
 
         await ctx.stub.putState('GREETING', ctx.toLedgerBuffer(greeting));
         console.log('put the greeting to the ledger');
-        console.info(`setGreeting to ${greeting.getText()}`);
 
         return greeting;
     }
@@ -59,7 +60,6 @@ export class GreetingContract extends Contract {
         console.info('setGreeting');
 
         Greeting.validate(greeting);
-
         await ctx.stub.putState('GREETING', ctx.toLedgerBuffer(greeting));
         console.info(`setGreeting to ${greeting}`);
     }
@@ -75,4 +75,25 @@ export class GreetingContract extends Contract {
         return greeting;
     }
 
+    @Transaction()
+    @Returns('string')
+    public async getGreetingText(ctx: GreetingContext): Promise<string> {
+        console.info('getGreeting');
+
+        const buffer = await ctx.stub.getState('GREETING');
+        const greeting: Greeting = ctx.fromLedgerBuffer(buffer);
+        console.info(`getGreeting of ${greeting.getText()}`);
+        return greeting.getText();
+    }
+
+    @Transaction()
+    @Returns('string')
+    public async paragraph(ctx: GreetingContext): Promise<string> {
+        console.log('>>>>  About to issue the setGreeting function........');
+        // get the greeting
+        const res = await ctx.stub.invokeChaincode('helloneta', ['setGreetingText', 'Dear Sidney'], 'mychannel');
+        console.log('>>>>  Returned.....  ........');
+        const text = `${res} Sorry for not putting beak to paper sooner. `;
+        return text;
+    }
 }
