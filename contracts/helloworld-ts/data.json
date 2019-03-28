@@ -1,1 +1,157 @@
-\"{\"args\":[\"Greeting:setGreeting\",\"{\\\\"text\\\":\\\\"helloworld\\\\"}\"]}\"
+{
+    "$schema": "https://fabric-shim.github.io/release-1.4/contract-schema.json",
+    "contracts": {
+        "Greeting": {
+            "name": "Greeting",
+            "contractInstance": {
+                "name": "Greeting",
+                "default": true
+            },
+            "transactions": [
+                {
+                    "tag": [
+                        "submitTx"
+                    ],
+                    "parameters": [],
+                    "name": "instantiate"
+                },
+                {
+                    "returns": [
+                        {
+                            "name": "success",
+                            "schema": {
+                                "$ref": "#/components/schemas/Greeting"
+                            }
+                        }
+                    ],
+                    "name": "setGreetingText",
+                    "tag": [
+                        "submitTx"
+                    ],
+                    "parameters": [
+                        {
+                            "name": "text",
+                            "description": "",
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "tag": [
+                        "submitTx"
+                    ],
+                    "parameters": [
+                        {
+                            "name": "greeting",
+                            "description": "",
+                            "schema": {
+                                "$ref": "#/components/schemas/Greeting"
+                            }
+                        }
+                    ],
+                    "name": "setGreeting"
+                },
+                {
+                    "returns": [
+                        {
+                            "name": "success",
+                            "schema": {
+                                "$ref": "#/components/schemas/Greeting"
+                            }
+                        }
+                    ],
+                    "name": "getGreeting",
+                    "tag": [
+                        "submitTx"
+                    ],
+                    "parameters": []
+                },
+                {
+                    "returns": [
+                        {
+                            "name": "success",
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    ],
+                    "name": "getGreetingText",
+                    "tag": [
+                        "submitTx"
+                    ],
+                    "parameters": []
+                },
+                {
+                    "returns": [
+                        {
+                            "name": "success",
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    ],
+                    "name": "paragraph",
+                    "tag": [
+                        "submitTx"
+                    ],
+                    "parameters": []
+                }
+            ],
+            "info": {
+                "name": "GreetingContract",
+                "description": "The description",
+                "version": ""
+            }
+        },
+        "org.hyperledger.fabric": {
+            "name": "org.hyperledger.fabric",
+            "contractInstance": {
+                "name": "org.hyperledger.fabric"
+            },
+            "transactions": [
+                {
+                    "name": "GetMetadata"
+                }
+            ],
+            "info": {
+                "title": "",
+                "version": ""
+            }
+        }
+    },
+    "info": {
+        "version": "0.0.1",
+        "title": "helloworld-ts"
+    },
+    "components": {
+        "schemas": {
+            "Greeting": {
+                "$id": "Greeting",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": [
+                    {
+                        "name": "text",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "textLength",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "wordCount",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}

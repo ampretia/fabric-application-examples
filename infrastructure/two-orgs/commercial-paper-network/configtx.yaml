@@ -40,7 +40,7 @@ Organizations:
             Admins:
                 Type: Signature
                 Rule: "OR('ordererMSP.admin')"
-
+                
     - &Org1
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
@@ -64,6 +64,9 @@ Organizations:
             Admins:
                 Type: Signature
                 Rule: "OR('magnetocorpMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('magnetocorpMSP.peer')"                
 
         # leave this flag set to true.
         AnchorPeers:
@@ -96,13 +99,15 @@ Organizations:
             Admins:
                 Type: Signature
                 Rule: "OR('digibankMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('digibankMSP.peer')"                
 
         AnchorPeers:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
             - Host: peer5.digibank.example.com
-#              Port: 7051
               Port: 8051
 
 ################################################################################
@@ -152,6 +157,9 @@ Capabilities:
     # used with prior release orderers.
     # Set the value of the capability to true to require it.
     Application: &ApplicationCapabilities
+        # V2.0 for Application enables the new non-backwards compatible
+        # features and fixes of fabric v2.0.
+        V2_0: true
         # V1.3 for Application enables the new non-backwards compatible
         # features and fixes of fabric v1.3.
         V1_3: true
@@ -191,6 +199,12 @@ Application: &ApplicationDefaults
         Admins:
             Type: ImplicitMeta
             Rule: "MAJORITY Admins"
+        LifecycleEndorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
+        Endorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
 
     Capabilities:
         <<: *ApplicationCapabilities
@@ -315,6 +329,7 @@ Profiles:
                     - *Org2
     TwoOrgsChannel:
         Consortium: SampleConsortium
+        <<: *ChannelDefaults
         Application:
             <<: *ApplicationDefaults
             Organizations:

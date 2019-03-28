@@ -19,7 +19,7 @@ import { Contract, Info, Returns, Transaction } from 'fabric-contract-api';
 import Greeting from './greeting';
 import GreetingContext from './greetingcontext';
 
-@Info({name: 'GreetingContract', description: 'The description'})
+@Info({title: 'GreetingContract', description: 'The description'})
 export class GreetingContract extends Contract {
 
     public constructor() {
@@ -37,27 +37,29 @@ export class GreetingContract extends Contract {
     public async instantiate(ctx: GreetingContext): Promise<any> {
         const greeting = { text: 'Hi' };
         await ctx.stub.putState('GREETING', Buffer.from(JSON.stringify(greeting)));
-
-        console.info('Set the default greeting');
+        const log = ctx.logging.getLogger();
+        log.info('Set the default greeting');
     }
 
     @Transaction()
     @Returns('Greeting')
     public async setGreetingText(ctx: GreetingContext, text: string): Promise<Greeting> {
-        console.info('setGreetingText');
+        const log = ctx.logging.getLogger();
+        log.info('setGreetingText');
         const greeting: Greeting = new Greeting(text);
 
-        console.info('Created greeting');
+        log.info('Created greeting');
 
         await ctx.stub.putState('GREETING', ctx.toLedgerBuffer(greeting));
-        console.log('put the greeting to the ledger');
+        log.info('put the greeting to the ledger');
 
         return greeting;
     }
 
     @Transaction()
     public async setGreeting(ctx: GreetingContext, greeting: Greeting): Promise<void> {
-        console.info('setGreeting');
+        const log = ctx.logging.getLogger();
+        log.info('setGreeting');
 
         Greeting.validate(greeting);
         await ctx.stub.putState('GREETING', ctx.toLedgerBuffer(greeting));
@@ -67,32 +69,35 @@ export class GreetingContract extends Contract {
     @Transaction()
     @Returns('Greeting')
     public async getGreeting(ctx: GreetingContext): Promise<Greeting> {
-        console.info('getGreeting');
+        const log = ctx.logging.getLogger();
+        log.info('getGreeting');
 
         const buffer = await ctx.stub.getState('GREETING');
         const greeting: Greeting = ctx.fromLedgerBuffer(buffer);
-        console.info(`getGreeting of ${greeting.getText()}`);
+        log.info(`getGreeting of ${greeting.getText()}`);
         return greeting;
     }
 
     @Transaction()
     @Returns('string')
     public async getGreetingText(ctx: GreetingContext): Promise<string> {
-        console.info('getGreeting');
+        const log = ctx.logging.getLogger();
+        log.info('getGreeting');
 
         const buffer = await ctx.stub.getState('GREETING');
         const greeting: Greeting = ctx.fromLedgerBuffer(buffer);
-        console.info(`getGreeting of ${greeting.getText()}`);
+        log.info(`getGreeting of ${greeting.getText()}`);
         return greeting.getText();
     }
 
     @Transaction()
     @Returns('string')
     public async paragraph(ctx: GreetingContext): Promise<string> {
-        console.log('>>>>  About to issue the setGreeting function........');
+        const log = ctx.logging.getLogger();
+        log.info('>>>>  About to issue the setGreeting function........');
         // get the greeting
         const res = await ctx.stub.invokeChaincode('helloneta', ['setGreetingText', 'Dear Sidney'], 'mychannel');
-        console.log('>>>>  Returned.....  ........');
+        log.info('>>>>  Returned.....  ........');
         const text = `${res} Sorry for not putting beak to paper sooner. `;
         return text;
     }

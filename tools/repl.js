@@ -139,10 +139,10 @@ async function main(cfg,logger) {
         rl.prompt();
 
     } catch (error) {
-        error(`Error: ${error}`);
-        log.info(error.stack);
+        console.log(`Error: ${error}`);
+        console.log(error.stack);
         // Disconnect from the gateway
-        log.info.log('Disconnect from Fabric gateway.');
+        console.log('Disconnect from Fabric gateway.');
         gateway.disconnect();
     }
 }

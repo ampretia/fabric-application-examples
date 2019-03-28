@@ -17,6 +17,15 @@
 		},
 		{
 			"path": "contracts/logging-example"
+		},
+		{
+			"path": "/home/matthew/go-master/src/github.com/hyperledger/fabric-chaincode-node"
+		},
+		{
+			"path": "/home/matthew/go-master/src/github.com/hyperledger/fabric-chaincode-java"
+		},
+		{
+			"path": "/home/matthew/github.com/ampretia/awesome-hlfabric-development"
 		}
 	],
 	"settings": {

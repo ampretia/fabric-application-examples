@@ -15,50 +15,29 @@ SPDX-License-Identifier: Apache-2.0
 'use strict';
 
 // Bring key classes into scope, most importantly Fabric SDK network class
-import * as fs from 'fs';
+
 import * as path from 'path';
 
-import { FileSystemWallet, Gateway } from 'fabric-network';
-import GreetingAPI from './greetingapi';
+import { FileSystemWallet, GreetingAPI, ServiceFactory } from './greetingservice';
 
-const walletPath = path.resolve(__dirname, '../_idwallet');
-// A wallet stores a collection of identities for use
-const wallet = new FileSystemWallet(walletPath);
-const fixtures = path.resolve(__dirname, '../local_fabric');
+// Configuration of the gateway and wallet to use
+const wallet = new FileSystemWallet(path.resolve(__dirname, '../local_fabric/wallet'));
+const gatewayProfilePath = path.resolve(__dirname, '../local_fabric/connection.json');
+const identityLabel = 'Admin@org1.example.com';
+const connectOptions = {
+    discovery: { enabled: false, asLocalhost: true },
+    identity: identityLabel,
+    wallet,
+};
 
 async function main() {
-
-    // A gateway defines the peers used to access Fabric networks
-    const gateway = new Gateway();
-
+    let serviceFactory: ServiceFactory;
     // Main try/catch block
     try {
 
-        // define the identity to use
-        const identityLabel = 'User1@org1.example.com';
-
-        const ccpPath = path.join(fixtures, 'connection.json');
-
-        // Load connection profile; will be used to locate a gateway
-        const connectionProfile = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
-
-        // Set connection options; use 'admin' identity from application wallet
-        const connectionOptions = {
-            discovery: { enabled: false, asLocalhost: true },
-            identity: identityLabel,
-            wallet,
-        };
-
-        // Connect to gateway using application specified parameters
-        await gateway.connect(connectionProfile, connectionOptions);
-
-        console.log('Connected to Fabric gateway.');
-
-        // Get addressability to PaperNet network
-        const network = await gateway.getNetwork('mychannel');
-
-        const greetingAPI = new GreetingAPI(network);
-        await greetingAPI.init('helloworld-ts');
+        serviceFactory = await ServiceFactory.configure(gatewayProfilePath, connectOptions);
+        const greetingService =
+            await serviceFactory.getServiceInstance('mychannel', 'helloworld-ts');
 
         const texttosend = 'Hi there!!';
         const sentGreeting = {
@@ -67,18 +46,19 @@ async function main() {
             wordCount: texttosend.split(' ').length,
         };
         console.log(`\n>> Setting greating to 'Hi there!!'`);
-        const text1 = await greetingAPI.setGreeting(sentGreeting);
+        const text1 = await greetingService.setGreeting(sentGreeting);
         console.log('>> Greeting set');
         console.log(text1);
 
-        const text = await greetingAPI.getGreetingText();
+        const text = await greetingService.getGreetingText();
         console.log(`\n>> The greeting is '${text}'`);
 
-        const userName = process.env.USERNAME  || 'fred';
-        await greetingAPI.setGreetingText(`Hello World ${userName}!!`);
+        const userName = process.env.USERNAME || 'fred';
+        await greetingService.setGreetingText(`Hello World ${userName}!!`);
 
-        const text3 = await greetingAPI.paragraph();
-        console.log(`\n ${text3}`)
+        const text3 = await greetingService.getGreeting();
+        console.log(`\n>> The greeting is '${text}'`);
+        console.log(`\n ${JSON.stringify(text3)}`);
 
     } catch (error) {
         console.log(`Error processing transaction. ${error}`);
@@ -86,7 +66,7 @@ async function main() {
     } finally {
         // Disconnect from the gateway
         console.log('Disconnect from Fabric gateway.');
-        gateway.disconnect();
+        serviceFactory.disconnect();
     }
 }
 

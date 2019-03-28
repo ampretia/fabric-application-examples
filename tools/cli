@@ -111,7 +111,7 @@ const getconfig = async () => {
     // get cmd line options and merge to those loaded
     let cmdConfig = cmdLineConfig();
 
-    console.log(cmdConfig);
+    // console.log(cmdConfig);
     if (cmdConfig.reset) {
         config = {};
         delete cmdConfig.reset;
@@ -119,12 +119,13 @@ const getconfig = async () => {
     }
     // this property isn't copied across.. as it's an array.
     config.command = cmdConfig._[0];
-    Object.assign(config, cmdLineConfig);
+    Object.assign(config,cmdConfig);
+    // console.log(config);
     let questions = [];
 
     Object.keys(options).forEach(key => {
         if (!(key in config)) {
-            q = options[key];
+            let q = options[key];
             q.name = key;
             q.type = 'input';
             q.message = `What is the ${q.describe} ?`;
@@ -150,7 +151,8 @@ async function main () {
     let cfg = await getconfig();
 
     let cmdFile = path.resolve(__dirname, `${cfg.command}.js`);
-    log.info(`Invoking "${cfg.command}"  ${cfg} `);
+    console.log(JSON.stringify(cfg));
+    console.log(cfg.connectionprofile);
     if (fs.existsSync(cmdFile)) {
         let format = path.extname(cfg.connectionprofile);
         switch (format) {
@@ -166,8 +168,8 @@ async function main () {
             process.exit(-1);
             break;
         }
-
-        require(cmdFile)(cfg);
+        log.info(`Invoking "${cfg.command}"  ${JSON.stringify(cfg)} `);
+        require(cmdFile)(cfg,log);
     } else {
         log.warn('Command does not exist');
         process.exit(-1);
@@ -179,6 +181,7 @@ main().then(() => {
 
 }).catch((e) => {
     log.warn(e);
+    log.warn(e.stack);
     process.exit(-1);
 });
 

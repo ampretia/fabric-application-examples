@@ -4,7 +4,9 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
-export PATH=$GOPATH/src/github.com/hyperledger/fabric/build/bin:${PWD}/../bin:${PWD}:$PATH
+#export PATH=$GOPATH/src/github.com/hyperledger/fabric/build/bin:${PWD}/../bin:${PWD}:$PATH
+export PATH=${PWD}/../bin:${PWD}:$PATH
+
 export FABRIC_CFG_PATH=${PWD}
 CHANNEL_NAME=mychannel
 
@@ -39,3 +41,9 @@ if [ "$?" -ne 0 ]; then
   echo "Failed to generate anchor peer update for Org1MSP..."
   exit 1
 fi
+
+# Rename the key files we use to be key.pem instead of a uuid
+for KEY in $(find crypto-config -type f -name "*_sk"); do
+    KEY_DIR=$(dirname ${KEY})
+    mv ${KEY} ${KEY_DIR}/key.pem
+done
