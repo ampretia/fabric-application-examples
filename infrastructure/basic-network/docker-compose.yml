@@ -80,7 +80,7 @@ services:
         - ./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/etc/hyperledger/msp/peer
         - ./crypto-config/peerOrganizations/org1.example.com/users:/etc/hyperledger/msp/users
         - ./config:/etc/hyperledger/configtx
-        - /home/matthew/.m2/:/root/.m2
+        - ${HOME}/.m2/:/root/.m2
     depends_on:
       - orderer.example.com
       - couchdb
@@ -119,7 +119,7 @@ services:
         - /var/run/:/host/var/run/
         - ./../../:/opt/gopath/src/github.com/
         - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
-        - /home/matthew/.m2/:/root/.m2
+        - ${HOME}/.m2/:/root/.m2
     networks:
         - basic
 
