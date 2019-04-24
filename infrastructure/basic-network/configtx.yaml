@@ -62,19 +62,19 @@ Organizations:
         # Policies defines the set of policies at this level of the config tree
         # For organization policies, their canonical path is usually
         #   /Channel/<Application|Orderer>/<OrgName>/<PolicyName>
-        # Policies:
-        #     Readers:
-        #         Type: Signature
-        #         Rule: "OR('Org1MSP.admin', 'Org1MSP.peer', 'Org1MSP.client')"
-        #     Writers:
-        #         Type: Signature
-        #         Rule: "OR('Org1MSP.admin', 'Org1MSP.client')"
-        #     Admins:
-        #         Type: Signature
-        #         Rule: "OR('Org1MSP.admin')"
-        #     Endorsement:
-        #         Type: Signature
-        #         Rule: "OR('Org1MSP.peer')"     
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('Org1MSP.admin', 'Org1MSP.peer', 'Org1MSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('Org1MSP.admin', 'Org1MSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('Org1MSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('Org1MSP.peer')"     
 
 Capabilities:
     # Channel capabilities apply to both the orderers and the peers and must be
@@ -135,22 +135,22 @@ Application: &ApplicationDefaults
     # Policies defines the set of policies at this level of the config tree
     # For Application policies, their canonical path is
     #   /Channel/Application/<PolicyName>
-    # Policies:
-    #     Readers:
-    #         Type: ImplicitMeta
-    #         Rule: "ANY Readers"
-    #     Writers:
-    #         Type: ImplicitMeta
-    #         Rule: "ANY Writers"
-    #     Admins:
-    #         Type: ImplicitMeta
-    #         Rule: "MAJORITY Admins"
-    #     LifecycleEndorsement:
-    #         Type: ImplicitMeta
-    #         Rule: "MAJORITY Endorsement"
-    #     Endorsement:
-    #         Type: ImplicitMeta
-    #         Rule: "MAJORITY Endorsement"            
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        LifecycleEndorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
+        Endorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"            
 
     Capabilities:
         <<: *ApplicationCapabilities
@@ -201,21 +201,21 @@ Orderer: &OrdererDefaults
     # Policies defines the set of policies at this level of the config tree
     # For Orderer policies, their canonical path is
     #   /Channel/Orderer/<PolicyName>
-    # Policies:
-    #     Readers:
-    #         Type: ImplicitMeta
-    #         Rule: "ANY Readers"
-    #     Writers:
-    #         Type: ImplicitMeta
-    #         Rule: "ANY Writers"
-    #     Admins:
-    #         Type: ImplicitMeta
-    #         Rule: "MAJORITY Admins"
-    #     # BlockValidation specifies what signatures must be included in the block
-    #     # from the orderer for the peer to validate it.
-    #     BlockValidation:
-    #         Type: ImplicitMeta
-    #         Rule: "ANY Writers"
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        # BlockValidation specifies what signatures must be included in the block
+        # from the orderer for the peer to validate it.
+        BlockValidation:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
 
 Channel: &ChannelDefaults
     # Policies defines the set of policies at this level of the config tree

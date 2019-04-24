@@ -68,3 +68,5 @@ typings/
 
 *.code-workspace
 hyperledger/**
+
+./infrastructure/bin/**/*

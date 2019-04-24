@@ -11,8 +11,8 @@ export FABRIC_CFG_PATH=${PWD}
 CHANNEL_NAME=mychannel
 
 # remove previous crypto material and config transactions
-rm -fr config/*
-rm -fr crypto-config/*
+rm -fr ./config/*
+rm -fr ./crypto-config/*
 
 # generate crypto material
 cryptogen generate --config=./crypto-config.yaml
@@ -22,7 +22,7 @@ if [ "$?" -ne 0 ]; then
 fi
 
 # generate genesis block for orderer
-configtxgen -profile OneOrgOrdererGenesis -outputBlock ./config/genesis.block
+configtxgen -profile OneOrgOrdererGenesis -outputBlock ./config/genesis.block -channelID byfn-sys-channel
 if [ "$?" -ne 0 ]; then
   echo "Failed to generate orderer genesis block..."
   exit 1
