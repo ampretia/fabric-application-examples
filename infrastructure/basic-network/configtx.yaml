@@ -266,6 +266,7 @@ Profiles:
                     - *Org1
     OneOrgChannel:
         Consortium: SampleConsortium
+        <<: *ChannelDefaults
         Application:
             <<: *ApplicationDefaults
             Organizations:
